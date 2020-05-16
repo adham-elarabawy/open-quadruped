@@ -52,11 +52,11 @@ class Leg:
 
 class Quadruped:
 
-    def __init__(self, ax, body_dim=(30, 15), limb_lengths=(10, 10), offsets=(3, 5)):
+    def __init__(self, ax, body_dim=(300, 150), limb_lengths=(107, 115), offsets=(10, 60)):
         '''
-        body_dim: (length, width,thickness) in cm
-        limb_lengths: (upper_arm, bottom_arm) in cm
-        offsets: (z_offset, y_offset) in cm
+        body_dim: (length, width,thickness) in mm
+        limb_lengths: (upper_arm, bottom_arm) in mm
+        offsets: (z_offset, y_offset) in mm
         '''
         self.ax = ax
         self.body_dim = body_dim
@@ -80,11 +80,17 @@ class Quadruped:
 
     @staticmethod
     def add_vector(base_vector, increment):
+        '''
+        Adds the given vectors element-wise in the order: base_vector + increment
+        '''
         assert(len(base_vector) == len(increment))
         return [val + increment[i] for i, val in enumerate(base_vector)]
 
     @staticmethod
     def subtract_vector(base_vector, increment):
+        '''
+        Subtracts the given vectors element-wise in the order: base_vector - increment
+        '''
         assert(len(base_vector) == len(increment))
         return [val - increment[i] for i, val in enumerate(base_vector)]
 
@@ -113,7 +119,7 @@ class Quadruped:
         z_data = [vector[2] for vector in self.body]
         self.ax.plot(x_data, y_data, z_data, color=color)
 
-    def draw_legs(self, desired_points=[(0, 10, 15), (0, 10, 15), (0, -10, 15), (0, -10, 15)], color='blue'):
+    def draw_legs(self, desired_points=[(0, 100, 150), (0, 100, 150), (0, -100, 150), (00, -100, 150)], color='blue'):
         for i, leg in enumerate(self.legs):
             desired_point = desired_points[i]
             leg_vectors = []
@@ -190,12 +196,12 @@ robot = Quadruped(ax)
 robot.draw_body()
 robot.draw_legs()
 
-WINDOW_SIZE = 30
+WINDOW_SIZE = 300
 ax.set_xlim3d(-WINDOW_SIZE, WINDOW_SIZE)
 ax.set_ylim3d(-WINDOW_SIZE, WINDOW_SIZE)
 ax.set_zlim3d(-WINDOW_SIZE, WINDOW_SIZE)
 
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_zlabel('z')
+ax.set_xlabel('x (mm)')
+ax.set_ylabel('y (mm)')
+ax.set_zlabel('z (mm)')
 plt.show()
