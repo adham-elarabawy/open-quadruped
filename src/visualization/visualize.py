@@ -15,9 +15,14 @@ class Leg:
         self.hip_rad = None
         self.shoulder_rad = None
         self.wrist_rad = None
+        # local
         self.x = None
         self.y = None
         self.z = None
+        # global
+        self.g_x = None
+        self.g_y = None
+        self.g_z = None
 
     def __str__(self):
         return f'origin: {self.origin}, angles: [hip: {math.degrees(self.hip_rad)}, shoulder: {math.degrees(self.shoulder_rad)}, wrist: {math.degrees(self.wrist_rad)}], endpoint: {(self.x, self.y, self.z)}'
@@ -88,6 +93,7 @@ class Quadruped:
         self.limb_lengths = limb_lengths
         self.offsets = offsets
         self.origin = origin
+        self.yaw = 0
 
         self.ik = InverseKinematics(
             limb_lengths[0], limb_lengths[1], self.body_dim, self.offsets)
@@ -214,12 +220,17 @@ class Quadruped:
             leg_vectors[-4] = Quadruped.add_vector(leg_vectors[0], Quadruped.rotate_vector(
                 Quadruped.subtract_vector(leg_vectors[-4], leg_vectors[0]), hip_axis, hip_rad))
 
+            for i, vector in enumerate(leg_vectors):
+                leg_vectors[i] = Quadruped.rotate_vector(
+                    vector, [self.origin[0], self.origin[1], 1], -self.yaw)
+
             x_data = [vector[0] for vector in leg_vectors]
             y_data = [vector[1] for vector in leg_vectors]
             z_data = [vector[2] for vector in leg_vectors]
             self.ax.plot(x_data, y_data, z_data, color=color)
 
     def fully_define(self, leg_points):
+        global DEBUG
         for i, leg in enumerate(self.legs):
             leg.x = leg_points[i][0]
             leg.y = leg_points[i][1]
@@ -233,13 +244,14 @@ class Quadruped:
             self.legs[i].wrist_rad = leg_angle_set[2]
 
     def start_position(self):
-        starting_points = [(-50, 50, self.origin[2]),
-                           (-50, 50, self.origin[2]),
-                           (-50, 50, self.origin[2]),
-                           (-50, 50, self.origin[2])]
+        starting_points = [(0, 0, self.origin[2]),
+                           (0, 0, self.origin[2]),
+                           (0, 0, self.origin[2]),
+                           (0, 0, self.origin[2])]
         self.fully_define(starting_points)
-        for leg in self.legs:
-            print(str(leg))
+        if DEBUG:
+            for leg in self.legs:
+                print(leg)
 
     def get_points_from_buffer(self):
         return [(leg.x, leg.y, leg.z) for leg in self.legs]
@@ -272,10 +284,66 @@ class Quadruped:
         for leg in self.legs:
             leg.origin = [leg.origin[i] + shift for i,
                           shift in enumerate(shifts)]
-            print(leg.origin)
 
     def shift_body_rotation(self, yaw, pitch, roll):
-        pass
+
+        # YAW CALCULATIONS
+        self.yaw = yaw
+        # getting global values for each leg
+        for i, leg in enumerate(self.legs):
+            # Front Right Leg
+            if i == 1:
+                x_g = self.body_dim[0] / 2 + leg.x
+                y_g = self.body_dim[1] / 2 + leg.y
+                alpha_0 = math.atan(x_g / y_g)
+                radius = math.sqrt(x_g**2 + y_g**2)
+                alpha_1 = alpha_0 + yaw
+                x_g = radius * math.sin(alpha_1)
+                y_g = radius * math.cos(alpha_1)
+                leg.x = x_g - (self.body_dim[0] / 2)
+                leg.y = y_g - (self.body_dim[1] / 2)
+            # Front Left Leg
+            if i == 2:
+                x_g = self.body_dim[0] / 2 + leg.x
+                y_g = self.body_dim[1] / 2 + leg.y
+                alpha_0 = math.atan(x_g / y_g)
+                radius = math.sqrt(x_g**2 + y_g**2)
+                alpha_1 = alpha_0 - yaw
+                x_g = radius * math.sin(alpha_1)
+                y_g = radius * math.cos(alpha_1)
+                leg.x = x_g - (self.body_dim[0] / 2)
+                leg.y = y_g - (self.body_dim[1] / 2)
+            # Back Right Leg
+            if i == 0:
+                print(leg.y)
+                x_g = self.body_dim[0] / 2 + leg.x
+                y_g = self.body_dim[1] / 2 + leg.y
+                alpha_0 = math.atan(y_g / x_g)
+                radius = math.sqrt(x_g**2 + y_g**2)
+                alpha_1 = alpha_0 + yaw
+                x_g = radius * math.cos(alpha_1)
+                y_g = radius * math.sin(alpha_1)
+                leg.x = (self.body_dim[0] / 2) - x_g
+                leg.y = y_g - (self.body_dim[1] / 2)
+            # Back Left Leg
+            if i == 3:
+                print(leg.y)
+                x_g = self.body_dim[0] / 2 + leg.x
+                y_g = self.body_dim[1] / 2 + leg.y
+                alpha_0 = math.atan(y_g / x_g)
+                radius = math.sqrt(x_g**2 + y_g**2)
+                alpha_1 = alpha_0 - yaw
+                x_g = radius * math.cos(alpha_1)
+                y_g = radius * math.sin(alpha_1)
+                leg.x = (self.body_dim[0] / 2) - x_g
+                leg.y = y_g - (self.body_dim[1] / 2)
+
+        # PITCH CALCULATIONS
+
+        self.fully_define(self.get_points_from_buffer())
+        for i, vector in enumerate(self.body):
+            self.body[i] = Quadruped.rotate_vector(
+                vector, [self.origin[0], self.origin[1], 1], -self.yaw)
 
 
 fig = plt.figure()
@@ -292,8 +360,9 @@ ax.set_ylabel('y (mm)')
 ax.set_zlabel('z (mm)')
 robot = Quadruped(ax, origin=(0, 0, 170))
 robot.start_position()
-robot.shift_body_xyz(50, -50, 0)
-# robot.shift_body_rotation()
+robot.shift_body_xyz(0, 0, 0)
+robot.shift_body_rotation(math.radians(-30), 0, 0)
+
 
 robot.draw_body()
 robot.draw_legs()
