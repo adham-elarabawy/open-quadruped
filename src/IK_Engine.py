@@ -1,11 +1,7 @@
 import math
 
-import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
-from pytictoc import TicToc
 
-t = TicToc()
 DEBUG = False
 
 
@@ -39,19 +35,10 @@ class InverseKinematics:
         self.body_dim = body_dim
         self.hip_offset = hip_offset  # z, y
 
-    def global_translation_engine(self, legs_xyz):
-        '''
-        Translation engine for global frame of reference (origin @ CoM of quadruped)
-        '''
-        pass
-
-    def global_rotation_engine(self, yaw, pitch, roll):
-        # roll calculations
-        t_0 = math.sin(pitch) * math.sin(pitch) / 2
-        # base_height =
-        pass
-
     def local_translation_engine(self, legs_xyz):
+        '''
+        Translation engine for
+        '''
         joint_angles = []
         for i, (x, y, z) in enumerate(legs_xyz):
             h1 = math.sqrt(self.hip_offset[0]**2 + self.hip_offset[1]**2)
@@ -363,7 +350,6 @@ class Quadruped:
         sig_z_front = (self.legs[1].z + self.legs[2].z) / 2
         sig_z_back = (self.legs[0].z + self.legs[3].z) / 2
         z_i = self.body_dim[1] / 2 * math.sin(roll)
-        print(z_i)
         for i, leg in enumerate(self.legs):
             if i == 0:
                 self.legs[i].z = sig_z_back + z_i
@@ -385,33 +371,3 @@ class Quadruped:
         for i, vector in enumerate(self.body):
             self.body[i] = Quadruped.rotate_vector(
                 vector, [1, 0, 0], -self.roll)
-
-
-fig = plt.figure()
-ax = Axes3D(fig)
-ax.set_aspect("equal")
-
-WINDOW_SIZE = 500
-ax.set_xlim3d(-WINDOW_SIZE / 2, WINDOW_SIZE / 2)
-ax.set_ylim3d(-WINDOW_SIZE / 2, WINDOW_SIZE / 2)
-ax.set_zlim3d(0, WINDOW_SIZE)
-
-ax.set_xlabel('x (mm)')
-ax.set_ylabel('y (mm)')
-ax.set_zlabel('z (mm)')
-robot = Quadruped(ax, origin=(0, 0, 170))
-robot.start_position()
-t.tic()
-robot.shift_body_xyz(30, 0, 0)
-t.toc()
-t.tic()
-robot.shift_body_rotation(math.radians(
-    20), math.radians(-10), math.radians(0))
-t.toc()
-
-
-robot.draw_body()
-robot.draw_legs()
-
-
-plt.show()
