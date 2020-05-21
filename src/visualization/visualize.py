@@ -224,13 +224,13 @@ class Quadruped:
 
             for i, vector in enumerate(leg_vectors):
                 leg_vectors[i] = Quadruped.rotate_vector(
-                    vector, [self.origin[0], self.origin[1], 1], -self.yaw)
+                    vector, [0, 0, 1], -self.yaw)
             for i, vector in enumerate(leg_vectors):
                 leg_vectors[i] = Quadruped.rotate_vector(
-                    vector, [self.origin[0], 1, 0], -self.pitch)
+                    vector, [0, 1, 0], -self.pitch)
             for i, vector in enumerate(leg_vectors):
                 leg_vectors[i] = Quadruped.rotate_vector(
-                    vector, [1, self.origin[1], 0], -self.roll)
+                    vector, [1, 0, 0], -self.roll)
 
             x_data = [vector[0] for vector in leg_vectors]
             y_data = [vector[1] for vector in leg_vectors]
@@ -252,10 +252,10 @@ class Quadruped:
             self.legs[i].wrist_rad = leg_angle_set[2]
 
     def start_position(self):
-        starting_points = [(-50, 50, self.origin[2]),
+        starting_points = [(50, 50, self.origin[2]),
                            (-50, 50, self.origin[2]),
                            (-50, 50, self.origin[2]),
-                           (-50, 50, self.origin[2])]
+                           (50, 50, self.origin[2])]
         self.fully_define(starting_points)
         if DEBUG:
             for leg in self.legs:
@@ -270,7 +270,10 @@ class Quadruped:
         local_z_shift = z
         shifts = (local_x_shift, local_y_shift, local_z_shift)
         for i, leg in enumerate(self.legs):
-            leg.x += -local_x_shift
+            if i == 1 or i == 2:
+                leg.x += -local_x_shift
+            else:
+                leg.x += local_x_shift
             if i < 2:
                 leg.y += local_y_shift
             else:
@@ -332,7 +335,7 @@ class Quadruped:
                 alpha_1 = alpha_0 + yaw
                 x_g = radius * math.cos(alpha_1)
                 y_g = radius * math.sin(alpha_1)
-                leg.x = (self.origin[0] + self.body_dim[0] / 2) - x_g
+                leg.x = -x_g + (self.origin[0] + self.body_dim[0] / 2)
                 leg.y = y_g - (self.origin[1] + self.body_dim[1] / 2)
             # Back Left Leg
             if i == 3:
@@ -343,7 +346,7 @@ class Quadruped:
                 alpha_1 = alpha_0 - yaw
                 x_g = radius * math.cos(alpha_1)
                 y_g = radius * math.sin(alpha_1)
-                leg.x = (self.origin[0] + self.body_dim[0] / 2) - x_g
+                leg.x = -x_g + (self.origin[0] + self.body_dim[0] / 2)
                 leg.y = y_g - (self.origin[1] + self.body_dim[1] / 2)
 
         # PITCH CALCULATIONS
@@ -360,7 +363,7 @@ class Quadruped:
         sig_z_front = (self.legs[1].z + self.legs[2].z) / 2
         sig_z_back = (self.legs[0].z + self.legs[3].z) / 2
         z_i = self.body_dim[1] / 2 * math.sin(roll)
-
+        print(z_i)
         for i, leg in enumerate(self.legs):
             if i == 0:
                 self.legs[i].z = sig_z_back + z_i
@@ -375,13 +378,13 @@ class Quadruped:
 
         for i, vector in enumerate(self.body):
             self.body[i] = Quadruped.rotate_vector(
-                vector, [self.origin[0], self.origin[1], 1], -self.yaw)
+                vector, [0, 0, 1], -self.yaw)
         for i, vector in enumerate(self.body):
             self.body[i] = Quadruped.rotate_vector(
-                vector, [self.origin[0], 1, 0], -self.pitch)
+                vector, [0, 1, 0], -self.pitch)
         for i, vector in enumerate(self.body):
             self.body[i] = Quadruped.rotate_vector(
-                vector, [1, self.origin[1], 0], -self.roll)
+                vector, [1, 0, 0], -self.roll)
 
 
 fig = plt.figure()
@@ -399,11 +402,11 @@ ax.set_zlabel('z (mm)')
 robot = Quadruped(ax, origin=(0, 0, 170))
 robot.start_position()
 t.tic()
-robot.shift_body_xyz(0, 0, 0)
+robot.shift_body_xyz(30, 0, 0)
 t.toc()
 t.tic()
 robot.shift_body_rotation(math.radians(
-    0), math.radians(0), math.radians(0))
+    20), math.radians(-10), math.radians(0))
 t.toc()
 
 
