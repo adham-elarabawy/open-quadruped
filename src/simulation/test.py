@@ -10,9 +10,8 @@ planeId = p.loadURDF("plane.urdf")
 cubeStartPos = [0, 0, 1]
 cubeStartOrientation = p.getQuaternionFromEuler([0, 0, 0])
 boxId = p.loadURDF("src/model/spot.urdf", cubeStartPos, cubeStartOrientation)
-for i in range(10000):
+for _ in range(300):
+    pos, ori = p.getBasePositionAndOrientation(__A__)
+    p.applyExternalForce(__B__, 0, [50, 0, 0], __C__, p.WORLD_FRAME)
     p.stepSimulation()
-    time.sleep(1. / 240.)
-cubePos, cubeOrn = p.getBasePositionAndOrientation(boxId)
-print(cubePos, cubeOrn)
 p.disconnect()

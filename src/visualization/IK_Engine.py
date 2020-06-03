@@ -7,6 +7,7 @@ DEBUG = False
 
 class Leg:
     def __init__(self, origin):
+        self.init_origin = origin
         self.origin = origin
         self.hip_rad = None
         self.shoulder_rad = None
@@ -69,7 +70,7 @@ class InverseKinematics:
 
 class Quadruped:
 
-    def __init__(self, ax, origin=(0, 0, 100), body_dim=(300, 150), limb_lengths=(107, 115), offsets=(10, 60)):
+    def __init__(self, ax, origin=(0, 0, 100), body_dim=(300, 150), limb_lengths=(107, 115), offsets=(10, 60), height=170):
         '''
         body_dim: (length, width,thickness) in mm
         limb_lengths: (upper_arm, bottom_arm) in mm
@@ -79,10 +80,12 @@ class Quadruped:
         self.body_dim = body_dim
         self.limb_lengths = limb_lengths
         self.offsets = offsets
+        self.init_origin = origin
         self.origin = origin
         self.yaw = 0
         self.pitch = 0
         self.roll = 0
+        self.height = height
 
         self.ik = InverseKinematics(
             limb_lengths[0], limb_lengths[1], self.body_dim, self.offsets)
@@ -239,10 +242,13 @@ class Quadruped:
             self.legs[i].wrist_rad = leg_angle_set[2]
 
     def start_position(self):
-        starting_points = [(50, 50, self.origin[2]),
-                           (-50, 50, self.origin[2]),
-                           (-50, 50, self.origin[2]),
-                           (50, 50, self.origin[2])]
+        for leg in self.legs:
+            leg.origin = leg.init_origin
+        self.origin = self.init_origin
+        starting_points = [(50, 50, self.height),
+                           (-50, 50, self.height),
+                           (-50, 50, self.height),
+                           (50, 50, self.height)]
         self.fully_define(starting_points)
         if DEBUG:
             for leg in self.legs:
