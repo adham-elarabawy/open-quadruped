@@ -35,37 +35,43 @@ class InverseKinematics:
         self.shoulder = shoulder
         self.body_dim = body_dim
         self.hip_offset = hip_offset  # z, y
+        self.joint_angles = []
 
     def local_translation_engine(self, legs_xyz):
         '''
         Translation engine for
         '''
-        joint_angles = []
-        for i, (x, y, z) in enumerate(legs_xyz):
-            h1 = math.sqrt(self.hip_offset[0]**2 + self.hip_offset[1]**2)
-            h2 = math.sqrt(z**2 + y**2)
-            alpha_0 = math.atan(y / z)
-            alpha_1 = math.atan(self.hip_offset[1] / self.hip_offset[0])
-            alpha_2 = math.atan(self.hip_offset[0] / self.hip_offset[1])
-            alpha_3 = math.asin(h1 * math.sin(alpha_2 + math.radians(90)) / h2)
-            alpha_4 = math.radians(
-                180) - (alpha_3 + alpha_2 + math.radians(90))
-            alpha_5 = alpha_1 - alpha_4
-            theta_h = alpha_0 - alpha_5
+        try:
+            joint_angles = []
+            for i, (x, y, z) in enumerate(legs_xyz):
+                h1 = math.sqrt(self.hip_offset[0]**2 + self.hip_offset[1]**2)
+                h2 = math.sqrt(z**2 + y**2)
+                alpha_0 = math.atan(y / z)
+                alpha_1 = math.atan(self.hip_offset[1] / self.hip_offset[0])
+                alpha_2 = math.atan(self.hip_offset[0] / self.hip_offset[1])
+                alpha_3 = math.asin(
+                    h1 * math.sin(alpha_2 + math.radians(90)) / h2)
+                alpha_4 = math.radians(
+                    180) - (alpha_3 + alpha_2 + math.radians(90))
+                alpha_5 = alpha_1 - alpha_4
+                theta_h = alpha_0 - alpha_5
 
-            r0 = h1 * math.sin(alpha_4) / math.sin(alpha_3)
-            h = math.sqrt(r0**2 + x**2)
-            phi = math.asin(x / h)
-            theta_s = math.acos(
-                (h**2 + self.shoulder**2 - self.wrist**2) / (2 * h * self.shoulder)) - phi
-            theta_w = math.acos((self.wrist**2 + self.shoulder **
-                                 2 - h**2) / (2 * self.wrist * self.shoulder))
+                r0 = h1 * math.sin(alpha_4) / math.sin(alpha_3)
+                h = math.sqrt(r0**2 + x**2)
+                phi = math.asin(x / h)
+                theta_s = math.acos(
+                    (h**2 + self.shoulder**2 - self.wrist**2) / (2 * h * self.shoulder)) - phi
+                theta_w = math.acos((self.wrist**2 + self.shoulder **
+                                     2 - h**2) / (2 * self.wrist * self.shoulder))
 
-            if i < 2:
-                joint_angles.append((theta_h, theta_s, theta_w))
-            else:
-                joint_angles.append((-theta_h, theta_s, theta_w))
-        return joint_angles
+                if i < 2:
+                    joint_angles.append((theta_h, theta_s, theta_w))
+                else:
+                    joint_angles.append((-theta_h, theta_s, theta_w))
+            self.joint_angles = joint_angles
+        except:
+            print("Out of bounds.")
+        return self.joint_angles
 
 
 class Quadruped:
@@ -290,82 +296,90 @@ class Quadruped:
                           shift in enumerate(shifts)]
 
     def shift_body_rotation(self, yaw, pitch, roll):
+        try:
+            # YAW CALCULATIONS
+            self.yaw = yaw
+            self.pitch = pitch
+            self.roll = roll
+            # YAW
 
-        # YAW CALCULATIONS
-        self.yaw = yaw
-        self.pitch = pitch
-        self.roll = roll
-        # YAW
-        for i, leg in enumerate(self.legs):
-            # Front Right Leg
-            if i == 1:
-                x_g = self.origin[0] + self.body_dim[0] / 2 + leg.x
-                y_g = self.origin[1] + self.body_dim[1] / 2 + leg.y
-                alpha_0 = math.atan(x_g / y_g)
-                radius = math.sqrt(x_g**2 + y_g**2)
-                alpha_1 = alpha_0 + yaw
-                x_g = radius * math.sin(alpha_1)
-                y_g = radius * math.cos(alpha_1)
-                leg.x = x_g - (self.body_dim[0] / 2 + self.origin[0])
-                leg.y = y_g - (self.body_dim[1] / 2 + self.origin[1])
-            # Front Left Leg
-            if i == 2:
-                x_g = self.origin[0] + self.body_dim[0] / 2 + leg.x
-                y_g = self.origin[1] + self.body_dim[1] / 2 + leg.y
-                alpha_0 = math.atan(x_g / y_g)
-                radius = math.sqrt(x_g**2 + y_g**2)
-                alpha_1 = alpha_0 - yaw
-                x_g = radius * math.sin(alpha_1)
-                y_g = radius * math.cos(alpha_1)
-                leg.x = x_g - (self.body_dim[0] / 2 + self.origin[0])
-                leg.y = y_g - (self.body_dim[1] / 2 + self.origin[1])
-            # Back Right Leg
-            if i == 0:
-                x_g = self.origin[0] + self.body_dim[0] / 2 + leg.x
-                y_g = self.origin[1] + self.body_dim[1] / 2 + leg.y
-                alpha_0 = math.atan(y_g / x_g)
-                radius = math.sqrt(x_g**2 + y_g**2)
-                alpha_1 = alpha_0 + yaw
-                x_g = radius * math.cos(alpha_1)
-                y_g = radius * math.sin(alpha_1)
-                leg.x = -x_g + (self.origin[0] + self.body_dim[0] / 2)
-                leg.y = y_g - (self.origin[1] + self.body_dim[1] / 2)
-            # Back Left Leg
-            if i == 3:
-                x_g = self.origin[0] + self.body_dim[0] / 2 + leg.x
-                y_g = self.origin[1] + self.body_dim[1] / 2 + leg.y
-                alpha_0 = math.atan(y_g / x_g)
-                radius = math.sqrt(x_g**2 + y_g**2)
-                alpha_1 = alpha_0 - yaw
-                x_g = radius * math.cos(alpha_1)
-                y_g = radius * math.sin(alpha_1)
-                leg.x = -x_g + (self.origin[0] + self.body_dim[0] / 2)
-                leg.y = y_g - (self.origin[1] + self.body_dim[1] / 2)
+            for i, leg in enumerate(self.legs):
+                # Front Right Leg
+                if i == 1:
+                    x_g = self.init_origin[0] + self.body_dim[0] / 2 + leg.x
+                    y_g = self.init_origin[1] + self.body_dim[1] / 2 + leg.y
+                    alpha_0 = math.atan(x_g / y_g)
+                    radius = math.sqrt(x_g**2 + y_g**2)
+                    alpha_1 = alpha_0 + yaw
+                    x_g = radius * math.sin(alpha_1)
+                    y_g = radius * math.cos(alpha_1)
+                    leg.x = x_g - (self.body_dim[0] / 2 + self.init_origin[0])
+                    leg.y = y_g - (self.body_dim[1] / 2 + self.init_origin[1])
+                # Front Left Leg
+                if i == 2:
+                    x_g = self.init_origin[0] + self.body_dim[0] / 2 + leg.x
+                    y_g = self.init_origin[1] + self.body_dim[1] / 2 + leg.y
+                    alpha_0 = math.atan(x_g / y_g)
+                    radius = math.sqrt(x_g**2 + y_g**2)
+                    alpha_1 = alpha_0 - yaw
+                    x_g = radius * math.sin(alpha_1)
+                    y_g = radius * math.cos(alpha_1)
+                    leg.x = x_g - (self.body_dim[0] / 2 + self.init_origin[0])
+                    leg.y = y_g - (self.body_dim[1] / 2 + self.init_origin[1])
+                # Back Right Leg
+                if i == 0:
+                    x_g = self.init_origin[0] + self.body_dim[0] / 2 + leg.x
+                    y_g = self.init_origin[1] + self.body_dim[1] / 2 + leg.y
+                    alpha_0 = math.atan(y_g / x_g)
+                    radius = math.sqrt(x_g**2 + y_g**2)
+                    alpha_1 = alpha_0 + yaw
+                    x_g = radius * math.cos(alpha_1)
+                    y_g = radius * math.sin(alpha_1)
+                    leg.x = -x_g + (self.init_origin[0] + self.body_dim[0] / 2)
+                    leg.y = y_g - (self.init_origin[1] + self.body_dim[1] / 2)
+                # Back Left Leg
+                if i == 3:
+                    x_g = self.init_origin[0] + self.body_dim[0] / 2 + leg.x
+                    y_g = self.init_origin[1] + self.body_dim[1] / 2 + leg.y
+                    alpha_0 = math.atan(y_g / x_g)
+                    radius = math.sqrt(x_g**2 + y_g**2)
+                    alpha_1 = alpha_0 - yaw
+                    x_g = radius * math.cos(alpha_1)
+                    y_g = radius * math.sin(alpha_1)
+                    leg.x = -x_g + (self.init_origin[0] + self.body_dim[0] / 2)
+                    leg.y = y_g - (self.init_origin[1] + self.body_dim[1] / 2)
 
-        # PITCH CALCULATIONS
-        sig_z = sum([leg.z for leg in self.legs]) / 4
-        z_i = self.body_dim[0] / 2 * math.sin(pitch)
+            # PITCH CALCULATIONS
+            sig_z = sum([leg.z for leg in self.legs]) / 4
+            z_i = self.body_dim[0] / 2 * math.sin(pitch)
+            x_i = 10 * self.body_dim[0] / 2 * (1 - math.cos(pitch))
+            print(x_i)
+            for i, leg in enumerate(self.legs):
+                print("before: ", self.legs[i].x)
+                if i == 1 or i == 2:
+                    self.legs[i].z = sig_z + z_i
+                    leg.x = self.legs[i].x - x_i
+                if i == 0 or i == 3:
+                    self.legs[i].z = sig_z - z_i
+                    leg.x = self.legs[i].x - x_i
+                print("after: ", self.legs[i].x)
 
-        for i, leg in enumerate(self.legs):
-            if i == 1 or i == 2:
-                self.legs[i].z = sig_z + z_i
-            if i == 0 or i == 3:
-                self.legs[i].z = sig_z - z_i
-
-        # ROLL CALCULATIONS
-        sig_z_front = (self.legs[1].z + self.legs[2].z) / 2
-        sig_z_back = (self.legs[0].z + self.legs[3].z) / 2
-        z_i = self.body_dim[1] / 2 * math.sin(roll)
-        for i, leg in enumerate(self.legs):
-            if i == 0:
-                self.legs[i].z = sig_z_back + z_i
-            if i == 1:
-                self.legs[i].z = sig_z_front + z_i
-            if i == 2:
-                self.legs[i].z = sig_z_front - z_i
-            if i == 3:
-                self.legs[i].z = sig_z_back - z_i
-
+            # ROLL CALCULATIONS
+            sig_z_front = (self.legs[1].z + self.legs[2].z) / 2
+            sig_z_back = (self.legs[0].z + self.legs[3].z) / 2
+            z_i = self.body_dim[1] / 2 * math.sin(roll)
+            # y_i = (self.body_dim[1] / 2) * (1 - math.cos(roll))
+            for i, leg in enumerate(self.legs):
+                if i == 0:
+                    self.legs[i].z = sig_z_back + z_i
+                if i == 1:
+                    self.legs[i].z = sig_z_front + z_i
+                if i == 2:
+                    self.legs[i].z = sig_z_front - z_i
+                if i == 3:
+                    self.legs[i].z = sig_z_back - z_i
+        except:
+            print("Out of bounds.")
         self.fully_define(self.get_points_from_buffer())
 
         for i, vector in enumerate(self.body):
