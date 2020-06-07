@@ -6,7 +6,7 @@ class AdvServo {
   double last_actuated;
   double error_threshold = 0.1;
   int control_range = 270;
-  double wait_time = 15;
+  double wait_time = 1;
   
   public:
   double goal;
@@ -33,27 +33,45 @@ void AdvServo::setPosition(double tempPos, double tempSpeed) {
 void AdvServo::update_clk() {
   if(millis() - last_actuated > wait_time){
     if(abs(pos - goal) > error_threshold) {
-      pos += wait_time / 1000 * spd;
+      int dir = 0;
+      if(goal - pos > 0) {
+        dir = 1;
+      } else if(goal - pos < 0) {
+        dir = -1;
+      }
+      pos += dir * wait_time / 1000 * spd;
       servo.write(pos * 180 / control_range);
       last_actuated = millis();
     }
   }
 }
 
-#define num_servos 2
-AdvServo servo1, servo2, servo3;
+AdvServo BR_Hip, BR_Shoulder, BR_Wrist, BL_Hip, BL_Shoulder, BL_Wrist, FR_Hip, FR_Shoulder, FR_Wrist, FL_Hip, FL_Shoulder, FL_Wrist;
 void setup() {
   Serial.begin(9600);
-  servo1.init(2, 0);
-  servo2.init(3, 0);
-  servo3.init(13, 0);
-  servo1.setPosition(270, 150);
-  servo2.setPosition(270, 150);
-  servo3.setPosition(270, 150);
+
+  // HIPS
+  FL_Hip.init(4, 135);
+  FR_Hip.init(11, 135);
+  BR_Hip.init(8, 135);
+  BL_Hip.init(7, 135);
+
+  //SHOULDERS
+  FL_Shoulder.init(2, 135);
+  FR_Shoulder.init(13, 125);
+  BR_Shoulder.init(10, 135);
+  BL_Shoulder.init(5, 135);
+
+  //WRISTS
+  FL_Wrist.init(3, 45);
+  FR_Wrist.init(12, 225);
+  BR_Wrist.init(9, 225);
+  BL_Wrist.init(6, 45);
 }
 
 void loop() {
-  servo1.update_clk();
-  servo2.update_clk();
-  servo3.update_clk();
+  FL_Hip.update_clk();
+  FR_Hip.update_clk();
+  BR_Hip.update_clk();
+  BL_Hip.update_clk();
 }
