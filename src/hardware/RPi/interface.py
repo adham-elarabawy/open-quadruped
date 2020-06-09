@@ -11,16 +11,44 @@ joy = xbox.Joystick()
 robot = Quadruped(origin=(0, 0, 0), height=170)
 x_shift = y_shift = z_shift = yaw_shift = 0
 x_bound = y_bound = z_bound = 50
-dampening_rate = 10
-temp_speed = 100
+dampening_rate = 3
+temp_speed = 200
 
-ser = serial.Serial('/dev/ttyS0', 38400, timeout=5)
+alpha = 0.8
+prev_joy_x = prev_joy_y = 0
+
+deadzone = 0.1
+
+ser = serial.Serial('/dev/ttyS0', 115200)
 ser.flush()
 
 while not joy.Back():
+
+    line = ""
     start_time = time.time()
-    x_shift = x_bound * joy.leftY()
-    y_shift = y_bound * joy.leftX()
+
+    # joystick filtering:
+
+    prefilter_x = joy.leftX()
+    prefilter_y = joy.leftY()
+
+    if prefilter_x < deadzone and prefilter_x > -deadzone:
+        prefilter_x = 0
+    if prefilter_y < deadzone and prefilter_y > -deadzone:
+        prefilter_y = 0
+
+    joy_x = alpha * prev_joy_x + (1 - alpha) * prefilter_x
+    joy_y = alpha * prev_joy_y + (1 - alpha) * prefilter_y
+
+    prev_joy_x = joy_x
+    prev_joy_y = joy_y
+
+    # getting servo positions from arduino
+    # if ser.inWaiting():
+    #     line += ser.readline().decode('utf-8').rstrip()
+
+    x_shift = x_bound * joy_y
+    y_shift = y_bound * joy_x
     z_shift += dampening_rate * (joy.dpadUp() - joy.dpadDown())
     yaw_shift += dampening_rate / 5 * (joy.dpadRight() - joy.dpadLeft())
     if (z_shift > z_bound):
@@ -57,6 +85,6 @@ while not joy.Back():
     for message in strings_to_send:
         ser.write(message.encode('utf-8'))
     print(
-        f'fps: {round(1/(time.time() - start_time), 1)}, z_shift: {z_shift}')
+        f'fps: {round(1/(time.time() - start_time), 1)}, positions: {line}')
 
 joy.close()
