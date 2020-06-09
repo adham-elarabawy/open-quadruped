@@ -128,7 +128,7 @@ double angleConversion(int leg, int joint, double angle) {
 }
 
 void setup() {
- Serial1.begin(19200); // default: 9600
+ Serial1.begin(38400); // default: 9600, 19200
  
   // HIPS
   FL_Hip.init(4, 135, 0);
@@ -139,8 +139,8 @@ void setup() {
   //SHOULDERS
   FL_Shoulder.init(2, 180, 0);
   FR_Shoulder.init(13, 90, -11);
-  BR_Shoulder.init(10, 90, 0);
-  BL_Shoulder.init(5, 180, 0);
+  BR_Shoulder.init(10, 90, 4);
+  BL_Shoulder.init(5, 180, 4);
 
   //WRISTS
   FL_Wrist.init(3, 0, 0);
