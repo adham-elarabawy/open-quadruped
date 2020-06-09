@@ -353,16 +353,13 @@ class Quadruped:
             sig_z = sum([leg.z for leg in self.legs]) / 4
             z_i = self.body_dim[0] / 2 * math.sin(pitch)
             x_i = 10 * self.body_dim[0] / 2 * (1 - math.cos(pitch))
-            print(x_i)
             for i, leg in enumerate(self.legs):
-                print("before: ", self.legs[i].x)
                 if i == 1 or i == 2:
                     self.legs[i].z = sig_z + z_i
                     leg.x = self.legs[i].x - x_i
                 if i == 0 or i == 3:
                     self.legs[i].z = sig_z - z_i
                     leg.x = self.legs[i].x - x_i
-                print("after: ", self.legs[i].x)
 
             # ROLL CALCULATIONS
             sig_z_front = (self.legs[1].z + self.legs[2].z) / 2

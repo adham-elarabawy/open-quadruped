@@ -21,7 +21,7 @@ ax.set_ylabel('y (mm)')
 ax.set_zlabel('z (mm)')
 
 # Setting up Quadruped
-robot = Quadruped(ax, origin=(0, 0, 0), height=start_height)
+robot = Quadruped(ax=ax, origin=(0, 0, 0), height=start_height)
 # Going to starting pose
 robot.start_position()
 # Shifting robot pose in cartesian system x-y-z (body-relative)

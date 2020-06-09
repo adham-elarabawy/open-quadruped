@@ -6,7 +6,7 @@ class AdvServo {
   double last_actuated;
   double error_threshold = 0.1;
   int control_range = 270;
-  double wait_time = 1;
+  double wait_time = 10;
   double off = 0;
   
   public:
@@ -18,10 +18,11 @@ class AdvServo {
   void update_clk();
 };
 
-void AdvServo::init(int servo_pin, double starting_angle, double off) {
+void AdvServo::init(int servo_pin, double starting_angle, double tempOffset) {
   servo.attach(servo_pin, 500, 2500);
+  off = tempOffset;
   pos = starting_angle + off;
-  servo.write(starting_angle * 180 / control_range);
+  servo.write((starting_angle + off) * 180 / control_range);
   delay(1000);
   last_actuated = millis();
 }
@@ -29,12 +30,12 @@ void AdvServo::init(int servo_pin, double starting_angle, double off) {
 void AdvServo::setPosition(double tempPos, double tempSpeed) {
   tempPos = tempPos + off;
   if(tempPos > control_range) {
-    Serial.println("Attempted to set position out of control range. Capped at max.");
+//    Serial.println("Attempted to set position out of control range. Capped at max.");
     tempPos = control_range;
   }
 
   if(tempPos < 0) {
-    Serial.println("Attempted to set position out of control range. Capped at min.");
+//    Serial.println("Attempted to set position out of control range. Capped at min.");
     tempPos = 0;
   }
   
@@ -59,7 +60,7 @@ void AdvServo::update_clk() {
 }
 
 String serialResponse = "";
-char sz[] = "FL-H-999-999"; // general structure with max numbers allowed.
+char sz[] = "FL,H,999.9,999.9"; // general structure with max numbers allowed.
 bool ESTOPPED = false;
 
 
@@ -98,6 +99,10 @@ double angleConversion(int leg, int joint, double angle) {
     if(leg == 3 || leg == 0) {
       angle = -angle;
     }
+
+    if(leg == 1 || leg == 3) {
+      angle = -angle;
+    }
     angle = angle + 135;
   }
   
@@ -123,18 +128,17 @@ double angleConversion(int leg, int joint, double angle) {
 }
 
 void setup() {
- Serial.begin(115200); // default: 9600
- Serial.setTimeout(5);
+ Serial1.begin(19200); // default: 9600
  
   // HIPS
   FL_Hip.init(4, 135, 0);
   FR_Hip.init(11, 135, 0);
-  BR_Hip.init(8, 135, 0);
-  BL_Hip.init(7, 135, 0);
+  BR_Hip.init(8, 135, -4);
+  BL_Hip.init(7, 135, 4);
 
   //SHOULDERS
   FL_Shoulder.init(2, 180, 0);
-  FR_Shoulder.init(13, 90, -7);
+  FR_Shoulder.init(13, 90, -11);
   BR_Shoulder.init(10, 90, 0);
   BL_Shoulder.init(5, 180, 0);
 
@@ -146,9 +150,11 @@ void setup() {
 }
 
 void loop() {
-  if ( Serial.available()) {
-    serialResponse = Serial.readStringUntil('\r\n');
-
+  if(!ESTOPPED){
+    update_servos();
+  }
+  if (Serial1.available()) {
+    serialResponse = Serial1.readStringUntil('\r\n');
     // Convert from String Object to String.
     char buf[sizeof(sz)];
     serialResponse.toCharArray(buf, sizeof(buf));
@@ -159,28 +165,24 @@ void loop() {
     int joint = -1; //0=Hip, 1=Shoulder, 2=Wrist
     double angle = -1;
     double spd = -1;
-    while ((str = strtok_r(p, "-", &p)) != NULL) { // delimiter is the dash
+    while ((str = strtok_r(p, ",", &p)) != NULL) { // delimiter is the dash
       if(strcmp(str, "e") == 0 || strcmp(str, "E") == 0) {
         ESTOPPED = true;
-        Serial.println("ESTOPPED! Restart to resume.");
+//        Serial.println("ESTOPPED! Restart to resume.");
       }
       if(index == 0) {
         upper(str);
         if(strcmp(str, "FL") == 0){
           leg = 0;
-          Serial.print("FRONT LEFT, ");
         }
         if(strcmp(str, "FR") == 0){
           leg = 1;
-          Serial.print("FRONT RIGHT, ");
         }
         if(strcmp(str, "BL") == 0){
           leg = 2;
-          Serial.print("BACK LEFT, ");
         }
         if(strcmp(str, "BR") == 0){
           leg = 3;
-          Serial.print("BACK RIGHT, ");
         }
       }
 
@@ -188,35 +190,28 @@ void loop() {
         upper(str);
         if(strcmp(str, "H") == 0){
           joint = 0;
-          Serial.print("Hip, ");
         }
         if(strcmp(str, "S") == 0){
           joint = 1;
-          Serial.print("Shoulder, ");
         }
         if(strcmp(str, "W") == 0){
           joint = 2;
-          Serial.print("Wrist, ");
         }
       }
 
       if(index == 2) {
         angle = atof(str);
-        Serial.print(str);
-        Serial.print(", ");
       }
 
       if(index == 3) {
         spd = atof(str);
-        Serial.print(str);
       }
       index++;
     }
-    Serial.println("");
 
     //ERROR CHECK
     if(leg == -1 || joint == -1 || angle == -1 || spd == -1){
-      Serial.println("BIG ERROR -- INCOMPLETE DATA");
+//      Serial.println("BIG ERROR -- INCOMPLETE DATA");
     }
 
     angle = angleConversion(leg, joint, angle);
@@ -269,8 +264,5 @@ void loop() {
       }
     }
     
-  }
-  if(!ESTOPPED){
-    update_servos();
   }
 }

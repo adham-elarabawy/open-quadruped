@@ -26,7 +26,7 @@ ax.set_ylabel('y (mm)')
 ax.set_zlabel('z (mm)')
 
 # Setting up Quadruped
-robot = Quadruped(ax, origin=(0, 0, 0), height=start_height)
+robot = Quadruped(ax=ax, origin=(0, 0, 0), height=start_height)
 
 switch = 'x'
 buffer = 0
