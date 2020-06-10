@@ -120,7 +120,7 @@ void setLegJointIDS() {
 
 void setup() {
 // Serial.begin(38400);
- Serial1.begin(115200); // default: 9600, 19200, 57600
+ Serial1.begin(115200); // default: 9600, 19200, 57600,115200
 
   // HIPS
   FL_Hip.init(4, 135, 0);
@@ -138,7 +138,7 @@ void setup() {
   FL_Wrist.init(3, 0, 0);
   FR_Wrist.init(12, 270, 0);
   BL_Wrist.init(6, 0, 0);
-  BR_Wrist.init(9, 270, 0);
+  BR_Wrist.init(9, 270, 3);
 
   setLegJointIDS();
 }
@@ -172,7 +172,20 @@ String getPositions() {
 }
 
 void loop() {
-  Serial1.println("01,02,03,04,05,06,07,08,09,10,11,12"); // sends current servo positions back to RPi for speed interpolation (aka smooth linear movements)
+  // Serial1.println("0,999,999,999");
+  //
+  // Serial1.println("FRH999");
+  // Serial1.println("FRS999");
+  // Serial1.println("FRW999");
+  //
+  // Serial1.println("BLH999");
+  // Serial1.println("BLS999");
+  // Serial1.println("BLW999");
+  //
+  // Serial1.println("BRH999");
+  // Serial1.println("BRS999");
+  // Serial1.println("BRW999");
+  // Serial1.println("01,02,03,04,05,06,07,08,09,10,11,12"); // sends current servo positions back to RPi for speed interpolation (aka smooth linear movements)
   if(!ESTOPPED){
     update_servos();
   }

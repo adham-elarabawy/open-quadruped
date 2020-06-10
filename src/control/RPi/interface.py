@@ -14,8 +14,8 @@ x_bound = y_bound = z_bound = 50
 dampening_rate = 3
 temp_speed = 200
 
-alpha = 0.8
-prev_joy_x = prev_joy_y = 0
+alpha = 0.7
+prev_joy_x = prev_joy_y = prev_z_shift = 0
 
 deadzone = 0.1
 
@@ -29,7 +29,7 @@ while not joy.Back():
 
     # joystick filtering:
 
-    prefilter_x = joy.leftX()
+    prefilter_x = -joy.leftX()
     prefilter_y = joy.leftY()
 
     if prefilter_x < deadzone and prefilter_x > -deadzone:
@@ -37,20 +37,21 @@ while not joy.Back():
     if prefilter_y < deadzone and prefilter_y > -deadzone:
         prefilter_y = 0
 
-    joy_x = alpha * prev_joy_x + (1 - alpha) * prefilter_x
-    joy_y = alpha * prev_joy_y + (1 - alpha) * prefilter_y
+    joy_x = round(alpha * prev_joy_x + (1 - alpha) * prefilter_x, 1)
+    joy_y = round(alpha * prev_joy_y + (1 - alpha) * prefilter_y, 1)
 
     prev_joy_x = joy_x
     prev_joy_y = joy_y
 
     # getting servo positions from arduino
-    # if ser.inWaiting():
-    #     line += ser.readline().decode('utf-8').rstrip()
+    if ser.inWaiting():
+        line += ser.readline().decode('utf-8').rstrip()
 
-    x_shift = x_bound * joy_y
-    y_shift = y_bound * joy_x
-    z_shift += dampening_rate * (joy.dpadUp() - joy.dpadDown())
-    yaw_shift += dampening_rate / 5 * (joy.dpadRight() - joy.dpadLeft())
+    x_shift = round(x_bound * joy_y, 1)
+    y_shift = round(y_bound * joy_x, 1)
+    z_shift += round(dampening_rate * (joy.dpadUp() - joy.dpadDown()), 1)
+    yaw_shift += round(dampening_rate / 5 *
+                       (joy.dpadRight() - joy.dpadLeft()), 1)
     if (z_shift > z_bound):
         z_shift = z_bound
     if (z_shift < -z_bound):
@@ -73,12 +74,17 @@ while not joy.Back():
     legs = [fl, fr, bl, br]
     key = ["FL", "FR", "BL", "BR"]
 
+    factor = 1
+
+    if (not z_shift == prev_z_shift):
+        factor = 0.5
+
     for i, leg in enumerate(legs):
         # Front Left
         strings_to_send.append(
             f'{key[i]},H,{round(math.degrees(-leg.hip_rad),1)},{temp_speed}\n')
         strings_to_send.append(
-            f'{key[i]},S,{round(math.degrees(leg.shoulder_rad),1)},{temp_speed}\n')
+            f'{key[i]},S,{round(math.degrees(leg.shoulder_rad),1)},{factor * temp_speed}\n')
         strings_to_send.append(
             f'{key[i]},W,{round(math.degrees(leg.wrist_rad),1)},{temp_speed}\n')
 
@@ -86,5 +92,8 @@ while not joy.Back():
         ser.write(message.encode('utf-8'))
     print(
         f'fps: {round(1/(time.time() - start_time), 1)}, positions: {line}')
+
+    prev_z_shift = z_shift
+
 
 joy.close()
