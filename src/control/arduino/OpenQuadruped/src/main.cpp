@@ -1,76 +1,7 @@
+#include <Arduino.h>
+#include "AdvServo.h"
 #include <Servo.h>
 
-class AdvServo {
-  private:
-  Servo servo;
-  double last_actuated;
-  double error_threshold = 0.5;
-  int control_range = 270;
-  double wait_time = 1;
-  double off = 0;
-  
-  public:
-  double goal;
-  double pos;
-  double spd;
-  int leg; // 0: Front Left, 1: Front Right, 2: Back Left, 3: Back Right
-  int joint; // 0: Hip, 1: Shoulder, 2: Wrist
-  void init(int servo_pin, double starting_angle, double off);
-  void setType(int tempLegNum, int tempJointNum);
-  void setPosition(double tempPos, double tempSpeed);
-  int getPosition();
-  void update_clk();
-};
-
-void AdvServo::init(int servo_pin, double starting_angle, double tempOffset) {
-  servo.attach(servo_pin, 500, 2500);
-  off = tempOffset;
-  pos = starting_angle + off;
-  servo.write((starting_angle + off) * 180 / control_range);
-  delay(1000);
-  last_actuated = millis();
-}
-
-void AdvServo::setType(int tempLegNum, int tempJointNum) { 
-  leg = tempLegNum;
-  joint = tempJointNum;
-}
-
-void AdvServo::setPosition(double tempPos, double tempSpeed) {
-  tempPos = tempPos + off;
-  if(tempPos > control_range) {
-//    Serial.println("Attempted to set position out of control range. Capped at max.");
-    tempPos = control_range;
-  }
-
-  if(tempPos < 0) {
-//    Serial.println("Attempted to set position out of control range. Capped at min.");
-    tempPos = 0;
-  }
-  
-  goal = tempPos;
-  spd = tempSpeed;
-}
-
-int AdvServo::getPosition() {
-  return static_cast<int>(pos - off);
-}
-
-void AdvServo::update_clk() {
-  if(millis() - last_actuated > wait_time){
-    if(abs(pos - goal) > error_threshold) {
-      int dir = 0;
-      if(goal - pos > 0) {
-        dir = 1;
-      } else if(goal - pos < 0) {
-        dir = -1;
-      }
-      pos += dir * wait_time / 1000 * spd;
-      servo.write(pos * 180 / control_range);
-      last_actuated = millis();
-    }
-  }
-}
 
 String serialResponse = "";
 char sz[] = "FL,H,999.9,999.9"; // general structure with max numbers allowed.
@@ -103,7 +34,7 @@ void update_servos(){
   FL_Wrist.update_clk();
   FR_Wrist.update_clk();
   BR_Wrist.update_clk();
-  BL_Wrist.update_clk();  
+  BL_Wrist.update_clk();
 }
 
 double angleConversion(int leg, int joint, double angle) {
@@ -113,7 +44,7 @@ double angleConversion(int leg, int joint, double angle) {
     }
     angle = angle + 135;
   }
-  
+
   if(joint == 1) {
     if(leg == 0 || leg == 2) {
       angle = 90 + angle;
@@ -122,7 +53,7 @@ double angleConversion(int leg, int joint, double angle) {
       angle = 180 - angle;
     }
   }
-  
+
   if(joint == 2) {
     double weird_offset = 50;
     if(leg == 0 || leg == 2) {
@@ -144,7 +75,7 @@ int inverse_angleConversion(int leg, int joint, double angle) {
       angle = angle - 135;
     }
   }
-  
+
   if(joint == 1) {
     if(leg == 0 || leg == 2) {
       angle = angle - 90;
@@ -153,7 +84,7 @@ int inverse_angleConversion(int leg, int joint, double angle) {
       angle = 180 - angle;
     }
   }
-  
+
   if(joint == 2) {
     double weird_offset = 50;
     if(leg == 0 || leg == 2) {
@@ -184,13 +115,13 @@ void setLegJointIDS() {
   FR_Wrist.setType(1, 2);
   BL_Wrist.setType(2, 2);
   BR_Wrist.setType(3, 2);
-  
+
 }
 
 void setup() {
 // Serial.begin(38400);
  Serial1.begin(115200); // default: 9600, 19200, 57600
- 
+
   // HIPS
   FL_Hip.init(4, 135, 0);
   FR_Hip.init(11, 135, 0);
@@ -237,11 +168,11 @@ String getPositions() {
   temp = temp + String(inverse_angleConversion(BR_Wrist.leg, BR_Wrist.joint, BR_Wrist.getPosition())) + delimiter;
 
   return temp;
-  
+
 }
 
 void loop() {
-//  Serial1.println("01,02,03,04,05,06,07,08,09,10,11,12"); // sends current servo positions back to RPi for speed interpolation (aka smooth linear movements)
+  Serial1.println("01,02,03,04,05,06,07,08,09,10,11,12"); // sends current servo positions back to RPi for speed interpolation (aka smooth linear movements)
   if(!ESTOPPED){
     update_servos();
   }
@@ -306,7 +237,7 @@ void loop() {
 //      Serial.println("BIG ERROR -- INCOMPLETE DATA");
     }
     angle = angleConversion(leg, joint, angle);
-    
+
     if(leg == 0) {
       if(joint == 0) {
         FL_Hip.setPosition(angle, spd);
@@ -354,6 +285,6 @@ void loop() {
         BR_Wrist.setPosition(angle, spd);
       }
     }
-    
+
   }
 }
