@@ -1,9 +1,14 @@
 import math
+import sys
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 from IK_Engine import Quadruped
+
+sys.path.append("../control")
+
+
 
 # Setting up 3D matplotlib figure
 fig = plt.figure()

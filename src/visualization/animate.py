@@ -10,7 +10,7 @@ from IK_Engine import Quadruped
 # Setting up 3D matplotlib figure
 fig = plt.figure()
 ax = Axes3D(fig)
-ax.set_aspect("equal")
+# ax.set_aspect("equal")
 
 x = y = z = yaw = pitch = roll = 0
 

@@ -2,10 +2,15 @@
 #include "AdvServo.h"
 #include <Servo.h>
 
+using namespace std;
 
 String serialResponse = "";
 char sz[] = "FL,H,999.9,999.9"; // general structure with max numbers allowed.
 bool ESTOPPED = false;
+
+int loopIndex = 0;
+int motorIndex = 0;
+int send_factor = 27;
 
 
 void upper(char* s) {
@@ -118,78 +123,81 @@ void setLegJointIDS() {
 
 }
 
+String getPosition(int id) {
+  String positions[12] = {};
+
+  String key = "0";
+  positions[0] = key + "H" + String(inverse_angleConversion(FL_Hip.leg, FL_Hip.joint, FL_Hip.getPosition()));
+  positions[1] = key + "S" + String(inverse_angleConversion(FL_Shoulder.leg, FL_Shoulder.joint, FL_Shoulder.getPosition()));
+  positions[2] = key + "W" + String(inverse_angleConversion(FL_Wrist.leg, FL_Wrist.joint, FL_Wrist.getPosition()));
+
+  key = "1";
+  positions[3] = key + "H" + String(inverse_angleConversion(FR_Hip.leg, FR_Hip.joint, FR_Hip.getPosition()));
+  positions[4] = key + "S" + String(inverse_angleConversion(FR_Shoulder.leg, FR_Shoulder.joint, FR_Shoulder.getPosition()));
+  positions[5] = key + "W" + String(inverse_angleConversion(FR_Wrist.leg, FR_Wrist.joint, FR_Wrist.getPosition()));
+
+  key = "2";
+  positions[6] = key + "H" + String(inverse_angleConversion(BL_Hip.leg, BL_Hip.joint, BL_Hip.getPosition()));
+  positions[7] = key + "S" + String(inverse_angleConversion(BL_Shoulder.leg, BL_Shoulder.joint, BL_Shoulder.getPosition()));
+  positions[8] = key + "W" + String(inverse_angleConversion(BL_Wrist.leg, BL_Wrist.joint, BL_Wrist.getPosition()));
+
+  key = "3";
+  positions[9] = key + "H" + String(inverse_angleConversion(BR_Hip.leg, BR_Hip.joint, BR_Hip.getPosition()));
+  positions[10] = key + "S" + String(inverse_angleConversion(BR_Shoulder.leg, BR_Shoulder.joint, BR_Shoulder.getPosition()));
+  positions[11] = key + "W" + String(inverse_angleConversion(BR_Wrist.leg, BR_Wrist.joint, BR_Wrist.getPosition()));
+
+  return positions[id];
+
+}
+
 void setup() {
-// Serial.begin(38400);
- Serial1.begin(115200); // default: 9600, 19200, 57600,115200
+  // Serial.begin(115200);
+  Serial1.begin(256000); // default: 9600, 19200, 57600,115200
 
   // HIPS
-  FL_Hip.init(4, 135, 0);
-  FR_Hip.init(11, 135, 0);
+  FL_Hip.init(4, 135, 4);
+  FR_Hip.init(11, 135, -2);
   BL_Hip.init(7, 135, 4);
-  BR_Hip.init(8, 135, -8);
+  BR_Hip.init(8, 135, -4);
 
   //SHOULDERS
   FL_Shoulder.init(2, 180, 0);
   FR_Shoulder.init(13, 90, -11);
-  BL_Shoulder.init(5, 180, 4);
-  BR_Shoulder.init(10, 90, -4);
+  BL_Shoulder.init(5, 180, 0); // +
+  BR_Shoulder.init(10, 90, 0); // -
 
   //WRISTS
   FL_Wrist.init(3, 0, 0);
-  FR_Wrist.init(12, 270, 0);
-  BL_Wrist.init(6, 0, 0);
-  BR_Wrist.init(9, 270, 3);
+  FR_Wrist.init(12, 270, -8);
+  BL_Wrist.init(6, 0, 7);
+  BR_Wrist.init(9, 270, -7);
 
   setLegJointIDS();
-}
 
-int loopIndex = 0;
+  for(int i = 0; i < 12; i++){
+    Serial1.println(getPosition(i));
+    delay(500);
+  }
 
-String getPositions() {
-  String temp = "";
-  String delimiter = ";";
-
-  // HIPS
-//  temp = temp + String(inverse_angleConversion(FL_Hip.leg, FL_Hip.joint, FL_Hip.getPosition())) + delimiter;
-//  temp = temp + String(inverse_angleConversion(FR_Hip.leg, FR_Hip.joint, FR_Hip.getPosition())) + delimiter;
-//  temp = temp + String(inverse_angleConversion(BL_Hip.leg, BL_Hip.joint, BL_Hip.getPosition())) + delimiter;
-//  temp = temp + String(inverse_angleConversion(BR_Hip.leg, BR_Hip.joint, BR_Hip.getPosition())) + delimiter;
-
-  // SHOULDERS
-//  temp = temp + String(inverse_angleConversion(FL_Shoulder.leg, FL_Shoulder.joint, FL_Shoulder.getPosition())) + delimiter;
-//  temp = temp + String(inverse_angleConversion(FR_Shoulder.leg, FR_Shoulder.joint, FR_Shoulder.getPosition())) + delimiter;
-//  temp = temp + String(inverse_angleConversion(BL_Shoulder.leg, BL_Shoulder.joint, BL_Shoulder.getPosition())) + delimiter;
-//  temp = temp + String(inverse_angleConversion(BR_Shoulder.leg, BR_Shoulder.joint, BR_Shoulder.getPosition())) + delimiter;
-//
-  // WRISTS
-  temp = temp + String(inverse_angleConversion(FL_Wrist.leg, FL_Wrist.joint, FL_Wrist.getPosition())) + delimiter;
-  temp = temp + String(inverse_angleConversion(FR_Wrist.leg, FR_Wrist.joint, FR_Wrist.getPosition())) + delimiter;
-  temp = temp + String(inverse_angleConversion(BL_Wrist.leg, BL_Wrist.joint, BL_Wrist.getPosition())) + delimiter;
-  temp = temp + String(inverse_angleConversion(BR_Wrist.leg, BR_Wrist.joint, BR_Wrist.getPosition())) + delimiter;
-
-  return temp;
-
+  delay(1000);
 }
 
 void loop() {
-  // Serial1.println("0,999,999,999");
-  //
-  // Serial1.println("FRH999");
-  // Serial1.println("FRS999");
-  // Serial1.println("FRW999");
-  //
-  // Serial1.println("BLH999");
-  // Serial1.println("BLS999");
-  // Serial1.println("BLW999");
-  //
-  // Serial1.println("BRH999");
-  // Serial1.println("BRS999");
-  // Serial1.println("BRW999");
-  // Serial1.println("01,02,03,04,05,06,07,08,09,10,11,12"); // sends current servo positions back to RPi for speed interpolation (aka smooth linear movements)
+  if (loopIndex > send_factor) {
+    loopIndex = 0;
+  }
+  if(motorIndex > 11) {
+    motorIndex = 0;
+  }
   if(!ESTOPPED){
     update_servos();
   }
   if (Serial1.available()) {
+    if(loopIndex == send_factor){
+      Serial1.println(getPosition(motorIndex));
+      // Serial.println(getPosition(motorIndex));
+      motorIndex++;
+    }
     serialResponse = Serial1.readStringUntil('\r\n');
     // Convert from String Object to String.
     char buf[sizeof(sz)];
@@ -300,4 +308,5 @@ void loop() {
     }
 
   }
+  loopIndex++;
 }
