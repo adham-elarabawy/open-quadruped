@@ -1,26 +1,24 @@
 #include <Arduino.h>
 #include "AdvServo.h"
+#include "InverseKinematics.h"
+#include "Util.h"
 #include <Servo.h>
 
 using namespace std;
 
 String serialResponse = "";
-char sz[] = "FL,H,999.9,999.9"; // general structure with max numbers allowed.
+char msg0[] = "0,-999.9,-999.9,-999.9"; // general structure for normal position command
+char msg1[] = "0,-999.9,-999.9,-999.9,-999.9,-999.9,-999.9"; // general structure for normal position/speed command
 bool ESTOPPED = false;
-
-int loopIndex = 0;
-int motorIndex = 0;
-int send_factor = 27;
-
-
-void upper(char* s) {
-  for(int i = 0; i < strlen(s); i++){
-    s[i] = toupper(s[i]);
-  }
-}
+int max_speed = 200; // deg / sec
 
 
 AdvServo BR_Hip, BR_Shoulder, BR_Wrist, BL_Hip, BL_Shoulder, BL_Wrist, FR_Hip, FR_Shoulder, FR_Wrist, FL_Hip, FL_Shoulder, FL_Wrist;
+AdvServo * hips[4] = {&FL_Hip, &FR_Hip, &BL_Hip, &BR_Hip};
+AdvServo * shoulders[4] = {&FL_Shoulder, &FR_Shoulder, &BL_Shoulder, &BR_Shoulder};
+AdvServo * wrists[4] = {&FL_Wrist, &FR_Wrist, &BL_Wrist, &BR_Wrist};
+Util util;
+InverseKinematics ik;
 
 void update_servos(){
   // HIPS
@@ -40,66 +38,6 @@ void update_servos(){
   FR_Wrist.update_clk();
   BR_Wrist.update_clk();
   BL_Wrist.update_clk();
-}
-
-double angleConversion(int leg, int joint, double angle) {
-  if(joint == 0){
-    if(leg == 0 || leg == 1) {
-      angle = -angle;
-    }
-    angle = angle + 135;
-  }
-
-  if(joint == 1) {
-    if(leg == 0 || leg == 2) {
-      angle = 90 + angle;
-    }
-    if(leg == 1 || leg == 3) {
-      angle = 180 - angle;
-    }
-  }
-
-  if(joint == 2) {
-    double weird_offset = 50;
-    if(leg == 0 || leg == 2) {
-      angle = angle - weird_offset;
-    }
-    if(leg == 1 || leg == 3) {
-      angle = (270 + weird_offset) - angle;
-    }
-  }
-  return angle;
-}
-
-int inverse_angleConversion(int leg, int joint, double angle) {
-  if(joint == 0){
-    if (leg == 0 || leg == 1) {
-      angle = 135 - angle;
-    }
-    if (leg == 2 || leg == 3) {
-      angle = angle - 135;
-    }
-  }
-
-  if(joint == 1) {
-    if(leg == 0 || leg == 2) {
-      angle = angle - 90;
-    }
-    if(leg == 1 || leg == 3) {
-      angle = 180 - angle;
-    }
-  }
-
-  if(joint == 2) {
-    double weird_offset = 50;
-    if(leg == 0 || leg == 2) {
-      angle = weird_offset + angle;
-    }
-    if(leg == 1 || leg == 3) {
-      angle = (270 + weird_offset) - angle;
-    }
-  }
-  return angle;
 }
 
 void setLegJointIDS() {
@@ -123,36 +61,11 @@ void setLegJointIDS() {
 
 }
 
-String getPosition(int id) {
-  String positions[12] = {};
-
-  String key = "0";
-  positions[0] = key + "H" + String(inverse_angleConversion(FL_Hip.leg, FL_Hip.joint, FL_Hip.getPosition()));
-  positions[1] = key + "S" + String(inverse_angleConversion(FL_Shoulder.leg, FL_Shoulder.joint, FL_Shoulder.getPosition()));
-  positions[2] = key + "W" + String(inverse_angleConversion(FL_Wrist.leg, FL_Wrist.joint, FL_Wrist.getPosition()));
-
-  key = "1";
-  positions[3] = key + "H" + String(inverse_angleConversion(FR_Hip.leg, FR_Hip.joint, FR_Hip.getPosition()));
-  positions[4] = key + "S" + String(inverse_angleConversion(FR_Shoulder.leg, FR_Shoulder.joint, FR_Shoulder.getPosition()));
-  positions[5] = key + "W" + String(inverse_angleConversion(FR_Wrist.leg, FR_Wrist.joint, FR_Wrist.getPosition()));
-
-  key = "2";
-  positions[6] = key + "H" + String(inverse_angleConversion(BL_Hip.leg, BL_Hip.joint, BL_Hip.getPosition()));
-  positions[7] = key + "S" + String(inverse_angleConversion(BL_Shoulder.leg, BL_Shoulder.joint, BL_Shoulder.getPosition()));
-  positions[8] = key + "W" + String(inverse_angleConversion(BL_Wrist.leg, BL_Wrist.joint, BL_Wrist.getPosition()));
-
-  key = "3";
-  positions[9] = key + "H" + String(inverse_angleConversion(BR_Hip.leg, BR_Hip.joint, BR_Hip.getPosition()));
-  positions[10] = key + "S" + String(inverse_angleConversion(BR_Shoulder.leg, BR_Shoulder.joint, BR_Shoulder.getPosition()));
-  positions[11] = key + "W" + String(inverse_angleConversion(BR_Wrist.leg, BR_Wrist.joint, BR_Wrist.getPosition()));
-
-  return positions[id];
-
-}
-
 void setup() {
-  // Serial.begin(115200);
-  Serial1.begin(256000); // default: 9600, 19200, 57600,115200
+  Serial.begin(115200);
+  Serial1.begin(115200);
+
+  ik.init(10, 60, 107, 130); // hip offset 0, hip_offset 1, shoulder length, wrist length
 
   // HIPS
   FL_Hip.init(4, 135, 4);
@@ -174,139 +87,89 @@ void setup() {
 
   setLegJointIDS();
 
-  for(int i = 0; i < 12; i++){
-    Serial1.println(getPosition(i));
-    delay(500);
-  }
-
   delay(1000);
 }
 
 void loop() {
-  if (loopIndex > send_factor) {
-    loopIndex = 0;
-  }
-  if(motorIndex > 11) {
-    motorIndex = 0;
-  }
   if(!ESTOPPED){
     update_servos();
   }
   if (Serial1.available()) {
-    if(loopIndex == send_factor){
-      Serial1.println(getPosition(motorIndex));
-      // Serial.println(getPosition(motorIndex));
-      motorIndex++;
-    }
     serialResponse = Serial1.readStringUntil('\r\n');
     // Convert from String Object to String.
-    char buf[sizeof(sz)];
+    char buf[sizeof(msg0)];
     serialResponse.toCharArray(buf, sizeof(buf));
-    char *p = buf;
+    char *ptr = buf;
     char *str;
     int index = 0;
     int leg = -1; //0=FL, 1=FR, 2=BL, 3=BR
-    int joint = -1; //0=Hip, 1=Shoulder, 2=Wrist
-    double angle = -1;
-    double spd = -1;
-    while ((str = strtok_r(p, ",", &p)) != NULL) { // delimiter is the dash
+    double x = -9999;
+    double y = -9999;
+    double z = -9999;
+    while ((str = strtok_r(ptr, ",", &ptr)) != NULL) { // delimiter is the dash
       if(strcmp(str, "e") == 0 || strcmp(str, "E") == 0) {
         ESTOPPED = true;
-//        Serial.println("ESTOPPED! Restart to resume.");
       }
+      if(strcmp(str, "s") == 0 || strcmp(str, "S") == 0) {
+        // toggle speed mode
+      }
+
       if(index == 0) {
-        upper(str);
-        if(strcmp(str, "FL") == 0){
+        util.upper(str);
+        if(strcmp(str, "0") == 0){
           leg = 0;
         }
-        if(strcmp(str, "FR") == 0){
+        if(strcmp(str, "1") == 0){
           leg = 1;
         }
-        if(strcmp(str, "BL") == 0){
+        if(strcmp(str, "2") == 0){
           leg = 2;
         }
-        if(strcmp(str, "BR") == 0){
+        if(strcmp(str, "3") == 0){
           leg = 3;
         }
       }
-
       if(index == 1) {
-        upper(str);
-        if(strcmp(str, "H") == 0){
-          joint = 0;
-        }
-        if(strcmp(str, "S") == 0){
-          joint = 1;
-        }
-        if(strcmp(str, "W") == 0){
-          joint = 2;
-        }
+        x = atof(str);
       }
-
       if(index == 2) {
-        angle = atof(str);
+        y = atof(str);
       }
-
       if(index == 3) {
-        spd = atof(str);
+        z = atof(str);
       }
       index++;
     }
 
-    //ERROR CHECK
-    if(leg == -1 || joint == -1 || angle == -1 || spd == -1){
-//      Serial.println("BIG ERROR -- INCOMPLETE DATA");
-    }
-    angle = angleConversion(leg, joint, angle);
+    //COMPLETE MESSAGE CHECK
+    if(leg != -9999 || x != -9999 || y != -9999 || z != -9999){
+      Serial.println("complete message");
+      double *p;
+      p = ik.run(leg, x, y, z);
 
-    if(leg == 0) {
-      if(joint == 0) {
-        FL_Hip.setPosition(angle, spd);
-      }
-      if(joint == 1) {
-        FL_Shoulder.setPosition(angle, spd);
-      }
-      if(joint == 2) {
-        FL_Wrist.setPosition(angle, spd);
-      }
-    }
+      double temp_hip = util.toDegrees(*p);
 
-    if(leg == 1) {
-      if(joint == 0) {
-        FR_Hip.setPosition(angle, spd);
+      if(leg == 1 || leg == 2){
+        temp_hip *= -1;
       }
-      if(joint == 1) {
-        FR_Shoulder.setPosition(angle, spd);
-      }
-      if(joint == 2) {
-        FR_Wrist.setPosition(angle, spd);
-      }
-    }
 
-    if(leg == 2) {
-      if(joint == 0) {
-        BL_Hip.setPosition(angle, spd);
-      }
-      if(joint == 1) {
-        BL_Shoulder.setPosition(angle, spd);
-      }
-      if(joint == 2) {
-        BL_Wrist.setPosition(angle, spd);
-      }
-    }
+      double hip_angle = util.angleConversion(leg, 0, temp_hip);
+      double shoulder_angle = util.angleConversion(leg, 1, util.toDegrees(*(p+1)));
+      double wrist_angle = util.angleConversion(leg, 2, util.toDegrees(*(p+2)));
 
-    if(leg == 3) {
-      if(joint == 0) {
-        BR_Hip.setPosition(angle, spd);
-      }
-      if(joint == 1) {
-        BR_Shoulder.setPosition(angle, spd);
-      }
-      if(joint == 2) {
-        BR_Wrist.setPosition(angle, spd);
-      }
-    }
+      double h_dist = abs(hip_angle - (*hips[leg]).getPosition());
+      double s_dist = abs(shoulder_angle - (*shoulders[leg]).getPosition());
+      double w_dist = abs(wrist_angle - (*wrists[leg]).getPosition());
 
+      double scaling_factor = util.max(h_dist, s_dist, w_dist);
+
+      h_dist /= scaling_factor;
+      s_dist /= scaling_factor;
+      w_dist /= scaling_factor;
+
+      (*hips[leg]).setPosition(hip_angle, max_speed * h_dist);
+      (*shoulders[leg]).setPosition(shoulder_angle, max_speed * s_dist);
+      (*wrists[leg]).setPosition(wrist_angle, max_speed * w_dist);
+    }
   }
-  loopIndex++;
 }
