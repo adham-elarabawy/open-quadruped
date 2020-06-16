@@ -65,6 +65,9 @@ while not joy.Back():
         z_shift = -z_bound
     if (joy.Y()):
         x_shift = y_shift = z_shift = yaw_shift = roll_shift = 0
+    if (joy.B()):
+        x_shift = y_shift = yaw_shift = roll_shift = 0
+        z_shift = -140
     # Going to starting pose
     robot.start_position()
     # Shifting robot pose in cartesian system x-y-z (body-relative)
