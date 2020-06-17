@@ -19,6 +19,6 @@ Note that the files that I provided are only for the left & front sides of the d
 
 
 ## Images
-![leg](leg.png)
+![leg](leg.png | width=200)
 ![hip](hip.png)
 ![plate](custom_plate.png)
