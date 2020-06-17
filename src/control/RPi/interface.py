@@ -16,10 +16,10 @@ robot = Quadruped(origin=(0, 0, 0), height=170)
 x_shift = y_shift = z_shift = yaw_shift = roll_shift = 0
 x_bound = y_bound = z_bound = 50
 roll_bound = 20
-dampening_rate = 3
+dampening_rate = 1
 max_speed = 150  # deg/sec
 
-alpha = 0.65
+alpha = 0.7
 prev_joy_x = prev_joy_y = prev_joy_x_r = 0
 
 deadzone = 0.2
@@ -94,11 +94,10 @@ while not joy.Back():
         strings_to_send.append(
             f'{i},{desired_x},{desired_y},{desired_z}\n')
 
-    print(strings_to_send)
     for message in strings_to_send:
         ser.write(message.encode('utf-8'))
-    # print(
-    #     f'fps: {round(1/(time.time() - start_time), 1)}, data: {line}')
+    print(
+        f'fps: {round(1/(time.time() - start_time), 1)}', end='\r')
 
 
 joy.close()
