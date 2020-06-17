@@ -4,7 +4,7 @@ An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walki
 ## Hardware
 I made a custom pcb board to control the position and speed of 12 servos simultaneously, as well as interface with all of the sensors.
 
-You can find the gerber files for the custom pcb in the [hardware folder](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/src/hardware) in this repository.
+You can find the gerber files for the custom pcb in the [hardware folder](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/hardware) in this repository.
 
 There are two versions: one that uses one power source to power all 12 servos and one that uses two power sources to power all 12 servos (in case of 2 batteries or two lower-current UBECs/Voltage regulators). Both version offer access to the teensy's serial pins, two I2C breakouts (in case you want to connect sensors) and a regulated 5V rail. The board uses 2mm wide traces + 2 ground planes in order to properly dissipate heat for high currents.
 
