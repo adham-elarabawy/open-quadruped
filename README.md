@@ -12,7 +12,7 @@ There are two versions: one that uses one power source to power all 12 servos an
 ![DoublePCB](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/hardware/DoublePCB.png)
 
 ## Visualization Usage
-To try the visualization tool out, you'll need to run the [animate.py](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/src/visualization/animate.py) python file with the proper libraries installed. 
+To try the visualization tool out, you'll need to run the [animate.py](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/visualization/animate.py) python file with the proper libraries installed. (matplotlib 3.0.3 supported).
 
 You can then use keyboard controls: use x, y, z, a, p, r to select (x axis, y axis, z axis, yaw, pitch, roll), and then the up and down buttons to increment the selected position. If you click '1' on your keyboard, it will reset the position. 
 
