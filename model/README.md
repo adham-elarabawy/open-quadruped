@@ -2,7 +2,7 @@
 In this folder, you can find all of the modified step & stl files that I used for my build of OpenQuadruped.
 
 ## Instructions
-Note that the files that I provided are only for the left & front sides of the dog. The reason for this is that you can derive the other parts by simply mirroring the given parts per my instruction.
+Note that the files that I provided are only for the left & front sides of the dog. The reason for this is that you can derive the other parts by simply mirroring the given parts in your slicer per my instruction.
 
 ## Quantities
 |Name|Quantity|File|Mirrored|
