@@ -2,7 +2,7 @@
 An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walking gaits, Artificial Intelligence for dynamic terrain mapping &amp; obstacle avoidance, Self-Balancing.
 
 ## 3D Model
-In the hardware folder, you can find all of the modified step & stl files that I used for my build of OpenQuadruped.
+In the model folder, you can find all of the modified step & stl files that I used for my build of OpenQuadruped.
 
 #### Instructions
 Note that the files that I provided are only for the left & front sides of the dog. The reason for this is that you can derive the other parts by simply mirroring the given parts per my instruction.
