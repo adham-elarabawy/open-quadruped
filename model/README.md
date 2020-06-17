@@ -19,4 +19,4 @@ Note that the files that I provided are only for the left & front sides of the d
 
 
 ## Images
-<img src="leg.png" width="300"> <img src="hip.png" width="300"> <img src="custom_plate.png" width="300">
+<img src="leg.png" width="400"> <img src="hip.png" width="400"> <img src="custom_plate.png" width="400">
