@@ -19,6 +19,6 @@ Note that the files that I provided are only for the left & front sides of the d
 
 
 ## Images
-![leg](leg.png | width=200)
-![hip](hip.png)
-![plate](custom_plate.png)
+<img src="leg.png" width="300">
+<img src="hip.png" width="300">
+<img src="custom_plate.png" width="300">
