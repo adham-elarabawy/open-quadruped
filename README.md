@@ -8,8 +8,8 @@ You can find the gerber files for the custom pcb in the [hardware folder](https:
 
 There are two versions: one that uses one power source to power all 12 servos and one that uses two power sources to power all 12 servos (in case of 2 batteries or two lower-current UBECs/Voltage regulators). Both version offer access to the teensy's serial pins, two I2C breakouts (in case you want to connect sensors) and a regulated 5V rail. The board uses 2mm wide traces + 2 ground planes in order to properly dissipate heat for high currents.
 
-![SinglePCB](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/src/hardware/SinglePCB.png)
-![DoublePCB](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/src/hardware/DoublePCB.png)
+![SinglePCB](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/hardware/SinglePCB.png)
+![DoublePCB](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/hardware/DoublePCB.png)
 
 ## Visualization Usage
 To try the visualization tool out, you'll need to run the [animate.py](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/src/visualization/animate.py) python file with the proper libraries installed. 
