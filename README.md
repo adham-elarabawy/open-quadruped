@@ -2,7 +2,7 @@
 An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walking gaits, Artificial Intelligence for dynamic terrain mapping &amp; obstacle avoidance, Self-Balancing.
 
 ## Hardware
-I made a custom pcb board to control the position and speed of 12 servos simultaneously, as well as itnerface with all of the sensors.
+I made a custom pcb board to control the position and speed of 12 servos simultaneously, as well as interface with all of the sensors.
 
 You can find the gerber files for the custom pcb in the [hardware folder](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/src/hardware) in this repository.
 
