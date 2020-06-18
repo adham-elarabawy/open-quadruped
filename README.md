@@ -44,6 +44,4 @@ Right now, if you try to go to an impossible pose that would result in collision
 *Note: Pitch and Roll are currently not working. I am currently trying to fix that.*
 
 ## Demos
-[![IK Model Demo 0](https://img.youtube.com/vi/79kFujIpjgo/0.jpg)](https://www.youtube.com/watch?v=79kFujIpjgo)
-[![IK Model Demo 1](https://img.youtube.com/vi/cCMvCH0m9TA/0.jpg)](https://www.youtube.com/watch?v=cCMvCH0m9TA)
-[![IK Model Visualization](https://img.youtube.com/vi/LBjqJVEXwhM/0.jpg)](https://www.youtube.com/watch?v=LBjqJVEXwhM)
+[![Force Sensitive Leg Test](https://img.youtube.com/vi/z8j-Z9Bwn58/0.jpg)](https://www.youtube.com/watch?v=z8j-Z9Bwn58)[![IK Model Demo 0](https://img.youtube.com/vi/79kFujIpjgo/0.jpg)](https://www.youtube.com/watch?v=79kFujIpjgo)[![IK Model Demo 1](https://img.youtube.com/vi/cCMvCH0m9TA/0.jpg)](https://www.youtube.com/watch?v=cCMvCH0m9TA)[![IK Model Visualization](https://img.youtube.com/vi/LBjqJVEXwhM/0.jpg)](https://www.youtube.com/watch?v=LBjqJVEXwhM)
