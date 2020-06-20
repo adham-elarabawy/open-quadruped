@@ -15,7 +15,7 @@ label = ['FL', 'FR', 'BL', 'BR']
 
 time_window = (T_stance + T_swing) + max(phase_lag)
 
-num_samples = 1000
+num_samples = 1000  # increase for more accurate matplotlib visualization
 
 
 def signal_sample(time, phase_lag, T_stance, T_swing):
