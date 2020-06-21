@@ -2,13 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 L_span = 40  # 0.5 * contact distance (mm)
-v_d = 100  # desired linear vel (mm/s)
+v_d = 50  # desired linear vel (mm/s)
 
 T_stance = 2 * L_span / v_d  # stance period
 T_swing = 0.25  # swing period
 
 # phase lag from reference leg 0 (FL) in seconds
-phase_lag = [0, 0.3, 0.6, 0.7]
+phase_lag = [0, T_swing, 2 * T_swing, 3 * T_swing]
 
 colors = ['black', 'blue', 'red', 'green']
 label = ['FL', 'FR', 'BL', 'BR']
