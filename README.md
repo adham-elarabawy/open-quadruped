@@ -1,6 +1,9 @@
 # OpenQuadruped
 An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walking gaits, Artificial Intelligence & Visual SLAM for dynamic terrain mapping &amp; obstacle avoidance, Self-Balancing.
 
+## Papers
+I've been formally documenting this project in the form of papers. You can find them here: [adham-e.dev/papers](https://adham-e.dev/papers)
+
 ## 3D Model
 In the model folder, you can find all of the modified step & stl files that I used for my build of OpenQuadruped.
 
