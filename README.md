@@ -1,5 +1,5 @@
 # OpenQuadruped
-An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walking gaits, Artificial Intelligence for dynamic terrain mapping &amp; obstacle avoidance, Self-Balancing.
+An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walking gaits, Artificial Intelligence & Visual SLAM for dynamic terrain mapping &amp; obstacle avoidance, Self-Balancing.
 
 ## 3D Model
 In the model folder, you can find all of the modified step & stl files that I used for my build of OpenQuadruped.
