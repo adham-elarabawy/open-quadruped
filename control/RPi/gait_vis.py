@@ -3,16 +3,9 @@ import time
 
 import matplotlib.pyplot as plt
 
-# import lib.xbox
 from lib.Bezier import Bezier
 from lib.GaitPlanner import GaitPlanner
 
-# import serial
-
-# from lib.LLC_Interface import LLC_Interface
-
-# joy = xbox.Joystick()
-# llc = LLC_Interface()
 x = [0]
 y = [-150]
 
@@ -69,9 +62,5 @@ while not False:
             sc1 = ax.scatter(x0, y0, c='red', label='FR/BL leg')
             fig.canvas.draw_idle()
             plt.pause(0.01)
-
-        # llc.add_to_buffer(i, x, y, z)
-
-    # llc.send_buffer()
     print(
         f'fps: {round(1/(time.time() - fps_start_time), 1)}', end='\r')
