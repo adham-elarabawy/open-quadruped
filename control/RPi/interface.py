@@ -5,12 +5,15 @@ import serial
 
 import lib.xbox
 from lib.IK_Engine import Quadruped
+from lib.LLC_Interface import LLC_Interface
 
 #FL, FR, BL, BR
 #Hip, Shoulder, Width
 joint_positions = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
 joy = xbox.Joystick()
+llc = LLC_Interface()
+
 # Setting up Quadruped
 robot = Quadruped(origin=(0, 0, 0), height=170)
 x_shift = y_shift = z_shift = yaw_shift = roll_shift = 0
@@ -23,9 +26,6 @@ alpha = 0.7
 prev_joy_x = prev_joy_y = prev_joy_x_r = 0
 
 deadzone = 0.2
-
-ser = serial.Serial('/dev/ttyS0', 115200)
-ser.flush()
 
 while not joy.Back():
     data_received = ""
@@ -76,26 +76,21 @@ while not joy.Back():
     robot.shift_body_rotation(math.radians(
         yaw_shift), math.radians(0), math.radians(roll_shift))
 
-    strings_to_send = []
     fl = robot.legs[2]
     fr = robot.legs[1]
     bl = robot.legs[3]
     br = robot.legs[0]
     legs = [fl, fr, bl, br]
 
-    factor = 1
-
     for i, leg in enumerate(legs):
 
-        desired_x = round(leg.x, 1)
-        desired_y = round(leg.y, 1)
-        desired_z = round(leg.z, 1)
+        x = round(leg.x, 1)
+        y = round(leg.y, 1)
+        z = round(leg.z, 1)
 
-        strings_to_send.append(
-            f'{i},{desired_x},{desired_y},{desired_z}\n')
+        llc.add_to_buffer(i, x, y, z)
 
-    for message in strings_to_send:
-        ser.write(message.encode('utf-8'))
+    llc.send_buffer()
     print(
         f'fps: {round(1/(time.time() - start_time), 1)}', end='\r')
 
