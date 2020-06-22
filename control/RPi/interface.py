@@ -3,8 +3,8 @@ import time
 
 import serial
 
-import xbox
-from IK_Engine import Quadruped
+import lib.xbox
+from lib.IK_Engine import Quadruped
 
 #FL, FR, BL, BR
 #Hip, Shoulder, Width

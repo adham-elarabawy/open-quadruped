@@ -29,6 +29,11 @@ def sample_bezier(t, cp):
 
 sample_space = np.linspace(0, 1, res)
 samples = [sample_bezier(sample_t, cp) for sample_t in sample_space]
-plt.scatter([point[0] for point in cp], [point[1] for point in cp])
+plt.scatter([point[0] for point in cp], [point[1]
+                                         for point in cp], color='red')
 plt.plot([sample[0] for sample in samples], [sample[1] for sample in samples])
+
+plt.xlabel('x (mm)')
+plt.ylabel('y (mm)')
+
 plt.show()
