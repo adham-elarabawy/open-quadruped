@@ -7,10 +7,6 @@ import lib.xbox
 from lib.IK_Engine import Quadruped
 from lib.LLC_Interface import LLC_Interface
 
-#FL, FR, BL, BR
-#Hip, Shoulder, Width
-joint_positions = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
-
 joy = xbox.Joystick()
 llc = LLC_Interface()
 
@@ -20,7 +16,6 @@ x_shift = y_shift = z_shift = yaw_shift = roll_shift = 0
 x_bound = y_bound = z_bound = 50
 roll_bound = 20
 dampening_rate = 1
-max_speed = 150  # deg/sec
 
 alpha = 0.7
 prev_joy_x = prev_joy_y = prev_joy_x_r = 0
