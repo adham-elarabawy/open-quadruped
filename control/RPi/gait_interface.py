@@ -9,25 +9,21 @@ llc = LLC_Interface()
 
 y = 80
 base_height = 150
-# L_span = 40
-v_d = 400
-alpha = 0
+L_span = 40
+v_d = 80
+alpha = 20
 
+T_swing = 0.15
+T_stance = 2 * L_span / v_d
 
-T_swing = 0.3
-
-L_span = T_swing * v_d / 2
-
-print(L_span)
-
-T_stride = 2 * L_span / v_d
+print(T_stance)
 
 x_shift = -25
 
-planner = GaitPlanner(T_stride, T_swing, [0, 0.5, 0.5, 0])
+planner = GaitPlanner(T_stance, T_swing, [0, 0.5, 0.5, 0])
 swing = Bezier(Bezier.get_cp_from_param(
     L_span=L_span, base_height=base_height, clearance=20))
-stride = Bezier(
+stance = Bezier(
     [[L_span, base_height], [0, base_height + alpha], [-L_span, base_height]])
 
 start_time = time.time()
@@ -37,7 +33,7 @@ while not False:
         signal = planner.signal_sample(time.time() - start_time, i)
 
         if signal[0] == 0:
-            x, z = stride.sample_bezier(signal[1])
+            x, z = stance.sample_bezier(signal[1])
         if signal[0] == 1:
             x, z = swing.sample_bezier(signal[1])
 

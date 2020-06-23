@@ -39,7 +39,7 @@ fig.canvas.draw_idle()
 planner = GaitPlanner(T_stance, T_swing, [0, 0.5, 0.5, 0])
 swing = Bezier(Bezier.get_cp_from_param(
     L_span=L_span, base_height=base_height))
-stride = Bezier(
+stance = Bezier(
     [[L_span, base_height], [0, base_height + alpha], [-L_span, base_height]])
 
 start_time = time.time()
@@ -49,7 +49,7 @@ while not False:
         signal = planner.signal_sample(time.time() - start_time, i)
 
         if signal[0] == 0:
-            x_val, z_val = stride.sample_bezier(signal[1])
+            x_val, z_val = stance.sample_bezier(signal[1])
         if signal[0] == 1:
             x_val, z_val = swing.sample_bezier(signal[1])
 
