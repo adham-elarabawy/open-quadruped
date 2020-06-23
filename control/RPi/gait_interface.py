@@ -24,7 +24,7 @@ T_stride = 2 * L_span / v_d
 
 x_shift = -25
 
-planner = GaitPlanner(T_stride, T_swing, [0, -T_stride, -T_stride, 0])
+planner = GaitPlanner(T_stride, T_swing, [0, 0.5, 0.5, 0])
 swing = Bezier(Bezier.get_cp_from_param(
     L_span=L_span, base_height=base_height, clearance=20))
 stride = Bezier(

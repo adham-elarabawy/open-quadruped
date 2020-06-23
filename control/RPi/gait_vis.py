@@ -18,16 +18,14 @@ sc = ax.scatter(x, y, c='black', label='FL/BR leg')
 sc1 = ax.scatter(x0, y0, c='red', label='FR/BL leg')
 
 base_height = 150
-# L_span = 40
-v_d = 300
-alpha = 0
+L_span = 40
+v_d = 80
+alpha = 20
 
+T_swing = 0.15
+T_stance = 2 * L_span / v_d
 
-T_swing = 0.3
-L_span = T_swing * v_d / 2
-T_stride = 2 * L_span / v_d
-
-print(T_stride)
+print(T_stance)
 
 plt.xlim(-2 * L_span, 2 * L_span)
 plt.ylim(-4 / 3 * base_height, 0)
@@ -38,7 +36,7 @@ plt.title('Outcome Trajectory: Gait Planner + Bezier')
 plt.draw()
 fig.canvas.draw_idle()
 
-planner = GaitPlanner(T_stride, T_swing, [0, -T_stride, -T_stride, 0])
+planner = GaitPlanner(T_stance, T_swing, [0, 0.5, 0.5, 0])
 swing = Bezier(Bezier.get_cp_from_param(
     L_span=L_span, base_height=base_height))
 stride = Bezier(
