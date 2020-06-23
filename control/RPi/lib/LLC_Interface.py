@@ -9,12 +9,12 @@ class LLC_Interface:
         self.buffer = []
 
     def __construct_string(self, i, x, y, z):
-        return f'{i},{desired_x},{desired_y},{desired_z}\n'
+        return f'{i},{x},{y},{z}\n'
 
     def add_to_buffer(self, i, x, y, z):
-        buffer.append(self.__construct_string(i, x, y, z)
+        self.buffer.append(self.__construct_string(i, x, y, z))
 
-    def send_buffer():
-        for message in buffer:
-            ser.write(message.encode('utf-8'))
-        self.buffer=[]
+    def send_buffer(self):
+        for message in self.buffer:
+            self.ser.write(message.encode('utf-8'))
+        self.buffer = []

@@ -65,25 +65,25 @@ void setup() {
   Serial.begin(115200);
   Serial1.begin(115200);
 
-  ik.init(10, 60, 107, 130); // hip offset 0, hip_offset 1, shoulder length, wrist length
+  ik.init(8.7, 59, 107, 130); // hip offset 0, hip_offset 1, shoulder length, wrist length
 
   // HIPS
-  FL_Hip.init(4, 135, 4);
-  FR_Hip.init(11, 135, -2);
-  BL_Hip.init(7, 135, 4);
-  BR_Hip.init(8, 135, -4);
+  FL_Hip.init(4, 135, -2);
+  FR_Hip.init(11, 135, 0);
+  BL_Hip.init(7, 135, 0);
+  BR_Hip.init(8, 135, 0);
 
   //SHOULDERS
-  FL_Shoulder.init(2, 180, 0);
-  FR_Shoulder.init(13, 90, -11);
-  BL_Shoulder.init(5, 180, 0); // +
-  BR_Shoulder.init(10, 90, 0); // -
+  FL_Shoulder.init(2, 180, -2);
+  FR_Shoulder.init(13, 90, -12);
+  BL_Shoulder.init(5, 180, 5); // +
+  BR_Shoulder.init(10, 90, -3); // -
 
   //WRISTS
   FL_Wrist.init(3, 0, 0);
-  FR_Wrist.init(12, 270, -8);
-  BL_Wrist.init(6, 0, 7);
-  BR_Wrist.init(9, 270, -7);
+  FR_Wrist.init(12, 270, -10);
+  BL_Wrist.init(6, 0, 10);
+  BR_Wrist.init(9, 270, 0);
 
   setLegJointIDS();
 

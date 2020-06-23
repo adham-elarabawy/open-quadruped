@@ -3,11 +3,11 @@ import time
 
 import serial
 
-import lib.xbox
 from lib.IK_Engine import Quadruped
 from lib.LLC_Interface import LLC_Interface
+from lib.xbox import Joystick
 
-joy = xbox.Joystick()
+joy = Joystick()
 llc = LLC_Interface()
 
 # Setting up Quadruped

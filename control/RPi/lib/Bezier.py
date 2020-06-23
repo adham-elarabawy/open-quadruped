@@ -25,7 +25,7 @@ class Bezier:
         return [x, y]
 
     @staticmethod
-    def get_cp_from_param(L_span=50, base_height=150):
+    def get_cp_from_param(L_span=50, base_height=150, clearance=0):
         x_scaling_factor = L_span / 200
         y_scaling_factor = base_height / 500
         x_center = 0
@@ -33,18 +33,18 @@ class Bezier:
             [x_center - L_span, base_height],
             [x_center - L_span - 80.5 * x_scaling_factor, base_height],
             [x_center - L_span - 100 * x_scaling_factor,
-                base_height - 138.9 * y_scaling_factor],
+                base_height - 138.9 * y_scaling_factor - clearance],
             [x_center - L_span - 100 * x_scaling_factor,
-                base_height - 138.9 * y_scaling_factor],
+                base_height - 138.9 * y_scaling_factor - clearance],
             [x_center - L_span - 100 * x_scaling_factor,
-                base_height - 138.9 * y_scaling_factor],
-            [x_center, base_height - 138.9 * y_scaling_factor],
-            [x_center, base_height - 138.9 * y_scaling_factor],
-            [x_center, base_height - 178.6 * y_scaling_factor],
+                base_height - 138.9 * y_scaling_factor - clearance],
+            [x_center, base_height - 138.9 * y_scaling_factor - clearance],
+            [x_center, base_height - 138.9 * y_scaling_factor - clearance],
+            [x_center, base_height - 178.6 * y_scaling_factor - clearance],
             [x_center + L_span + 103.2 * x_scaling_factor,
-                base_height - 178.6 * y_scaling_factor],
+                base_height - 178.6 * y_scaling_factor - clearance],
             [x_center + L_span + 103.2 * x_scaling_factor,
-                base_height - 178.6 * y_scaling_factor],
+                base_height - 178.6 * y_scaling_factor - clearance],
             [x_center + L_span + 82.6 * x_scaling_factor, base_height],
             [x_center + L_span, base_height]
         ]
