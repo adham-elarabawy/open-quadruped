@@ -18,9 +18,16 @@ sc = ax.scatter(x, y, c='black', label='FL/BR leg')
 sc1 = ax.scatter(x0, y0, c='red', label='FR/BL leg')
 
 base_height = 150
-L_span = 50
-v_d = 200
-alpha = 30
+# L_span = 40
+v_d = 300
+alpha = 0
+
+
+T_swing = 0.3
+L_span = T_swing * v_d / 2
+T_stride = 2 * L_span / v_d
+
+print(T_stride)
 
 plt.xlim(-2 * L_span, 2 * L_span)
 plt.ylim(-4 / 3 * base_height, 0)
@@ -31,12 +38,9 @@ plt.title('Outcome Trajectory: Gait Planner + Bezier')
 plt.draw()
 fig.canvas.draw_idle()
 
-T_stride = 2 * L_span / v_d
-T_swing = 0.4
-
-planner = GaitPlanner(T_stride, T_swing, [0, T_stride, T_stride, 0])
+planner = GaitPlanner(T_stride, T_swing, [0, -T_stride, -T_stride, 0])
 swing = Bezier(Bezier.get_cp_from_param(
-    L_span=L_span, base_height=base_height, clearance=10))
+    L_span=L_span, base_height=base_height))
 stride = Bezier(
     [[L_span, base_height], [0, base_height + alpha], [-L_span, base_height]])
 
@@ -64,6 +68,6 @@ while not False:
             sc2 = ax.plot([-2 * L_span, 2 * L_span],
                           [-base_height, -base_height], c='grey')
             fig.canvas.draw_idle()
-            plt.pause(0.01)
+            plt.pause(0.005)
     print(
         f'fps: {round(1/(time.time() - fps_start_time), 1)}', end='\r')

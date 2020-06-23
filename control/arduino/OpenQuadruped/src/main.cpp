@@ -10,7 +10,7 @@ String serialResponse = "";
 char msg0[] = "0,-999.9,-999.9,-999.9"; // general structure for normal position command
 char msg1[] = "0,-999.9,-999.9,-999.9,-999.9,-999.9,-999.9"; // general structure for normal position/speed command
 bool ESTOPPED = false;
-int max_speed = 200; // deg / sec
+int max_speed = 375; // deg / sec
 
 
 AdvServo BR_Hip, BR_Shoulder, BR_Wrist, BL_Hip, BL_Shoulder, BL_Wrist, FR_Hip, FR_Shoulder, FR_Wrist, FL_Hip, FL_Shoulder, FL_Wrist;
@@ -62,8 +62,7 @@ void setLegJointIDS() {
 }
 
 void setup() {
-  Serial.begin(115200);
-  Serial1.begin(115200);
+  Serial1.begin(256000);
 
   ik.init(8.7, 59, 107, 130); // hip offset 0, hip_offset 1, shoulder length, wrist length
 
