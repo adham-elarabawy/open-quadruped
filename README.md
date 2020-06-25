@@ -1,6 +1,11 @@
 # OpenQuadruped
 An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walking gaits, Artificial Intelligence & Visual SLAM for dynamic terrain mapping &amp; obstacle avoidance, Self-Balancing.
 
+## Current Status
+
+[![Rudimentary Trot Gait 0](https://img.youtube.com/vi/O10b29GVjn4/0.jpg)](https://www.youtube.com/watch?v=O10b29GVjn4)
+[![Rudimentary Trot Gait 1](https://img.youtube.com/vi/_3zA3F-i4RU/0.jpg)](https://www.youtube.com/watch?v=_3zA3F-i4RU)
+
 ## Papers
 I've been formally documenting this project in the form of papers. You can find them here: [adham-e.dev/papers](https://adham-e.dev/papers)
 
@@ -52,5 +57,5 @@ Right now, if you try to go to an impossible pose that would result in collision
 
 *Note: Pitch and Roll are currently not working. I am currently trying to fix that.*
 
-## Demos
+## More Demos
 [![Force Sensitive Leg Test](https://img.youtube.com/vi/z8j-Z9Bwn58/0.jpg)](https://www.youtube.com/watch?v=z8j-Z9Bwn58)[![IK Model Demo 0](https://img.youtube.com/vi/79kFujIpjgo/0.jpg)](https://www.youtube.com/watch?v=79kFujIpjgo)[![IK Model Demo 1](https://img.youtube.com/vi/cCMvCH0m9TA/0.jpg)](https://www.youtube.com/watch?v=cCMvCH0m9TA)[![IK Model Visualization](https://img.youtube.com/vi/LBjqJVEXwhM/0.jpg)](https://www.youtube.com/watch?v=LBjqJVEXwhM)
