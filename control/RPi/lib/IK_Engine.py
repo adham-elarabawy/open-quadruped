@@ -251,10 +251,10 @@ class Quadruped:
         for leg in self.legs:
             leg.origin = leg.init_origin
         self.origin = self.init_origin
-        starting_points = [(50, 70, self.height),
-                           (-50, 70, self.height),
-                           (-50, 70, self.height),
-                           (50, 70, self.height)]
+        starting_points = [(50, 80, self.height),
+                           (-50, 80, self.height),
+                           (-50, 80, self.height),
+                           (50, 80, self.height)]
         self.fully_define(starting_points)
         if DEBUG:
             for leg in self.legs:

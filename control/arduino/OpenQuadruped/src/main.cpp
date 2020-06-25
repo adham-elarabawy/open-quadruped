@@ -10,7 +10,7 @@ String serialResponse = "";
 char msg0[] = "0,-999.9,-999.9,-999.9"; // general structure for normal position command
 char msg1[] = "0,-999.9,-999.9,-999.9,-999.9,-999.9,-999.9"; // general structure for normal position/speed command
 bool ESTOPPED = false;
-int max_speed = 375; // deg / sec
+int max_speed = 500; // deg / sec
 
 
 AdvServo BR_Hip, BR_Shoulder, BR_Wrist, BL_Hip, BL_Shoulder, BL_Wrist, FR_Hip, FR_Shoulder, FR_Wrist, FL_Hip, FL_Shoulder, FL_Wrist;
@@ -62,7 +62,7 @@ void setLegJointIDS() {
 }
 
 void setup() {
-  Serial1.begin(256000);
+  Serial1.begin(500000);
 
   ik.init(8.7, 59, 107, 130); // hip offset 0, hip_offset 1, shoulder length, wrist length
 
@@ -70,19 +70,19 @@ void setup() {
   FL_Hip.init(4, 135, -2);
   FR_Hip.init(11, 135, 0);
   BL_Hip.init(7, 135, 0);
-  BR_Hip.init(8, 135, 0);
+  BR_Hip.init(8, 135, -3);
 
   //SHOULDERS
   FL_Shoulder.init(2, 180, -2);
-  FR_Shoulder.init(13, 90, -12);
+  FR_Shoulder.init(13, 90, -14);
   BL_Shoulder.init(5, 180, 5); // +
-  BR_Shoulder.init(10, 90, -3); // -
+  BR_Shoulder.init(10, 90, 0); // -
 
   //WRISTS
-  FL_Wrist.init(3, 0, 0);
+  FL_Wrist.init(3, 0, -2);
   FR_Wrist.init(12, 270, -10);
-  BL_Wrist.init(6, 0, 10);
-  BR_Wrist.init(9, 270, 0);
+  BL_Wrist.init(6, 0, 9);
+  BR_Wrist.init(9, 270, -2);
 
   setLegJointIDS();
 

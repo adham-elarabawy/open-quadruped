@@ -38,7 +38,7 @@ fig.canvas.draw_idle()
 
 planner = GaitPlanner(T_stance, T_swing, [0, 0.5, 0.5, 0])
 swing = Bezier(Bezier.get_cp_from_param(
-    L_span=L_span, base_height=base_height))
+    L_span=L_span, base_height=base_height, clearance=10))
 stance = Bezier(
     [[L_span, base_height], [0, base_height + alpha], [-L_span, base_height]])
 

@@ -2,7 +2,7 @@ import serial
 
 
 class LLC_Interface:
-    def __init__(self, port='/dev/ttyS0', baud=256000):
+    def __init__(self, port='/dev/ttyS0', baud=500000):
         self.ser = serial.Serial(port, baud)
         self.ser.flush()
 

@@ -7,22 +7,22 @@ from lib.LLC_Interface import LLC_Interface
 
 llc = LLC_Interface()
 
-y = 80
+y = 55
 base_height = 150
-L_span = 40
-v_d = 80
-alpha = 20
+L_span = 50
+v_d = 100
+alpha = 5
 
-T_swing = 0.15
+T_swing = 0.3
 T_stance = 2 * L_span / v_d
 
 print(T_stance)
 
-x_shift = -25
+x_shift = -40
 
 planner = GaitPlanner(T_stance, T_swing, [0, 0.5, 0.5, 0])
 swing = Bezier(Bezier.get_cp_from_param(
-    L_span=L_span, base_height=base_height, clearance=20))
+    L_span=L_span, base_height=base_height, clearance=5))
 stance = Bezier(
     [[L_span, base_height], [0, base_height + alpha], [-L_span, base_height]])
 
