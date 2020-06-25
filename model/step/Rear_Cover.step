@@ -9,8 +9,8 @@ FILE_DESCRIPTION(
 /* implementation_level */ '2;1');
 
 FILE_NAME(
-/* name */ '5ef400547f573c109510d9e4',
-/* time_stamp */ '2020-06-25T01:39:32+00:00',
+/* name */ '5ef50eab5ea0be0fb47f822f',
+/* time_stamp */ '2020-06-25T20:53:00+00:00',
 /* author */ (''),
 /* organization */ (''),
 /* preprocessor_version */ 'ST-DEVELOPER v16.7',
@@ -1602,7 +1602,7 @@ DATA;
 #1437=SURFACE_STYLE_FILL_AREA(#1438);
 #1438=FILL_AREA_STYLE('',(#1439));
 #1439=FILL_AREA_STYLE_COLOUR('',#1440);
-#1440=COLOUR_RGB('',0.909803921568627,0.67843137254902,0.137254901960784);
+#1440=COLOUR_RGB('',0.4,0.4,0.4);
 #1441=MANIFOLD_SOLID_BREP('Rear_Cover',#1432);
 #1442=SHAPE_DEFINITION_REPRESENTATION(#2997,#1443);
 #1443=SHAPE_REPRESENTATION('Rear_Cover',(#1444),#2992);
