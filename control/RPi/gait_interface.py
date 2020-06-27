@@ -1,30 +1,28 @@
 import math
 import time
+from enum import Enum
 
 from lib.Bezier import Bezier
+from lib.GaitParameters import GaitParameters
 from lib.GaitPlanner import GaitPlanner
 from lib.LLC_Interface import LLC_Interface
 
+
+class Gait(Enum):
+    #gait_name = GaitParameters(phase_lag, T_swing, L_span, v_d, penetration_alpha, base_height, y, x_shift, clearance)
+    trot = GaitParameters([0, 0.5, 0.5, 0], 0.3, 50, 100, 5, 150, 55, -40, 5)
+
+
 llc = LLC_Interface()
 
-y = 55
-base_height = 150
-L_span = 50
-v_d = 100
-alpha = 5
+# **CHANGE SELECTED GAIT HERE ** #
+gait = Gait.trot
 
-T_swing = 0.3
-T_stance = 2 * L_span / v_d
-
-print(T_stance)
-
-x_shift = -40
-
-planner = GaitPlanner(T_stance, T_swing, [0, 0.5, 0.5, 0])
+planner = GaitPlanner(gait.T_stance, gait.T_swing, gait.phase_lag)
 swing = Bezier(Bezier.get_cp_from_param(
-    L_span=L_span, base_height=base_height, clearance=5))
+    L_span=gait.L_span, base_height=gait.base_height, clearance=gait.clearance))
 stance = Bezier(
-    [[L_span, base_height], [0, base_height + alpha], [-L_span, base_height]])
+    [[gait.L_span, gait.base_height], [0, gait.base_height + gait.penetration_alpha], [-gait.L_span, gait.base_height]])
 
 start_time = time.time()
 while not False:
@@ -37,7 +35,8 @@ while not False:
         if signal[0] == 1:
             x, z = swing.sample_bezier(signal[1])
 
-        llc.add_to_buffer(i, round(x + x_shift, 1), round(y, 1), round(z, 1))
+        llc.add_to_buffer(i, round(x + gait.x_shift, 1),
+                          round(gait.y, 1), round(z, 1))
     llc.send_buffer()
     print(
         f'fps: {round(1/(time.time() - fps_start_time), 1)}', end='\r')
