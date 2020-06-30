@@ -20,4 +20,5 @@ class AdvServo {
   void setPosition(double tempPos, double tempSpeed);
   int getPosition();
   void update_clk();
+  void detach();
 };

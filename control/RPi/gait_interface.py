@@ -1,22 +1,21 @@
 import math
 import time
-from enum import Enum
 
 from lib.Bezier import Bezier
 from lib.GaitParameters import GaitParameters
 from lib.GaitPlanner import GaitPlanner
 from lib.LLC_Interface import LLC_Interface
 
-
-class Gait(Enum):
-    #gait_name = GaitParameters(phase_lag, T_swing, L_span, v_d, penetration_alpha, base_height, y, x_shift, clearance)
-    trot = GaitParameters([0, 0.5, 0.5, 0], 0.3, 50, 100, 5, 150, 55, -40, 5)
+# GAITS
+#gait_name = GaitParameters(phase_lag, T_swing, L_span, v_d, penetration_alpha, base_height, y, x_shift, clearance)
+crawl = GaitParameters([0, 0.5, 0.75, 0.25], 0.4, 70, 50, 5, 160, 55, -25, 25)
+trot = GaitParameters([0, 0.5, 0.5, 0], 0.3, 50, 100, 5, 150, 55, -40, 5)
 
 
 llc = LLC_Interface()
 
 # **CHANGE SELECTED GAIT HERE ** #
-gait = Gait.trot
+gait = crawl
 
 planner = GaitPlanner(gait.T_stance, gait.T_swing, gait.phase_lag)
 swing = Bezier(Bezier.get_cp_from_param(

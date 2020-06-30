@@ -51,3 +51,7 @@ void AdvServo::update_clk() {
     }
   }
 }
+
+void AdvServo::detach() {
+  servo.detach();
+}

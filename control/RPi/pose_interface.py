@@ -89,5 +89,4 @@ while not joy.Back():
     print(
         f'fps: {round(1/(time.time() - start_time), 1)}', end='\r')
 
-
 joy.close()

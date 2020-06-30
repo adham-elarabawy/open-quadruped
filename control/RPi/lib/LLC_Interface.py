@@ -14,6 +14,9 @@ class LLC_Interface:
     def add_to_buffer(self, i, x, y, z):
         self.buffer.append(self.__construct_string(i, x, y, z))
 
+    def add_raw(self, val):
+        self.buffer.append(f'{val}\n')
+
     def send_buffer(self):
         for message in self.buffer:
             self.ser.write(message.encode('utf-8'))

@@ -20,6 +20,26 @@ AdvServo * wrists[4] = {&FL_Wrist, &FR_Wrist, &BL_Wrist, &BR_Wrist};
 Util util;
 InverseKinematics ik;
 
+void detach_servos() {
+  // HIPS
+  FL_Hip.detach();
+  FR_Hip.detach();
+  BR_Hip.detach();
+  BL_Hip.detach();
+
+  // SHOULDER
+  FL_Shoulder.detach();
+  FR_Shoulder.detach();
+  BR_Shoulder.detach();
+  BL_Shoulder.detach();
+
+  // WRIST
+  FL_Wrist.detach();
+  FR_Wrist.detach();
+  BR_Wrist.detach();
+  BL_Wrist.detach();
+}
+
 void update_servos(){
   // HIPS
   FL_Hip.update_clk();
@@ -73,16 +93,16 @@ void setup() {
   BR_Hip.init(8, 135, -3);
 
   //SHOULDERS
-  FL_Shoulder.init(2, 180, -2);
+  FL_Shoulder.init(2, 180, -3);
   FR_Shoulder.init(13, 90, -14);
   BL_Shoulder.init(5, 180, 5); // +
   BR_Shoulder.init(10, 90, 0); // -
 
   //WRISTS
-  FL_Wrist.init(3, 0, -2);
-  FR_Wrist.init(12, 270, -10);
-  BL_Wrist.init(6, 0, 9);
-  BR_Wrist.init(9, 270, -2);
+  FL_Wrist.init(3, 0, 1);
+  FR_Wrist.init(12, 270, 0);
+  BL_Wrist.init(6, 0, 0);
+  BR_Wrist.init(9, 270, 0);
 
   setLegJointIDS();
 
@@ -92,6 +112,8 @@ void setup() {
 void loop() {
   if(!ESTOPPED){
     update_servos();
+  } else {
+    detach_servos();
   }
   if (Serial1.available()) {
     serialResponse = Serial1.readStringUntil('\r\n');
@@ -108,9 +130,6 @@ void loop() {
     while ((str = strtok_r(ptr, ",", &ptr)) != NULL) { // delimiter is the dash
       if(strcmp(str, "e") == 0 || strcmp(str, "E") == 0) {
         ESTOPPED = true;
-      }
-      if(strcmp(str, "s") == 0 || strcmp(str, "S") == 0) {
-        // toggle speed mode
       }
 
       if(index == 0) {
