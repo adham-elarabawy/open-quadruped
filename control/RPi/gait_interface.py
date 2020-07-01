@@ -15,7 +15,7 @@ trot = GaitParameters([0, 0.5, 0.5, 0], 0.3, 50, 100, 5, 150, 55, -40, 5)
 llc = LLC_Interface()
 
 # **CHANGE SELECTED GAIT HERE ** #
-gait = crawl
+gait = trot
 
 planner = GaitPlanner(gait.T_stance, gait.T_swing, gait.phase_lag)
 swing = Bezier(Bezier.get_cp_from_param(
