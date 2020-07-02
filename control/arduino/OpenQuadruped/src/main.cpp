@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "AdvServo.h"
+#include "FootSensor.h"
 #include "InverseKinematics.h"
 #include "Util.h"
 #include <Servo.h>
@@ -14,6 +15,7 @@ int max_speed = 500; // deg / sec
 
 
 AdvServo BR_Hip, BR_Shoulder, BR_Wrist, BL_Hip, BL_Shoulder, BL_Wrist, FR_Hip, FR_Shoulder, FR_Wrist, FL_Hip, FL_Shoulder, FL_Wrist;
+FootSensor FL_sensor, FR_sensor, BL_sensor, BR_sensor;
 AdvServo * hips[4] = {&FL_Hip, &FR_Hip, &BL_Hip, &BR_Hip};
 AdvServo * shoulders[4] = {&FL_Shoulder, &FR_Shoulder, &BL_Shoulder, &BR_Shoulder};
 AdvServo * wrists[4] = {&FL_Wrist, &FR_Wrist, &BL_Wrist, &BR_Wrist};
@@ -60,6 +62,13 @@ void update_servos(){
   BL_Wrist.update_clk();
 }
 
+void update_sensors() {
+  FL_sensor.update_clk();
+  FR_sensor.update_clk();
+  BL_sensor.update_clk();
+  BR_sensor.update_clk();
+}
+
 void setLegJointIDS() {
   // HIPS
   FL_Hip.setType(0, 0);
@@ -99,10 +108,15 @@ void setup() {
   BR_Shoulder.init(10, 90, 0); // -
 
   //WRISTS
-  FL_Wrist.init(3, 0, 1);
-  FR_Wrist.init(12, 270, 0);
-  BL_Wrist.init(6, 0, 0);
-  BR_Wrist.init(9, 270, 0);
+  FL_Wrist.init(3, 0, 2);
+  FR_Wrist.init(12, 270, -2);
+  BL_Wrist.init(6, 0, 2);
+  BR_Wrist.init(9, 270, -1);
+
+  FL_sensor.init(A9, 17);
+  FR_sensor.init(A8, 16);
+  BL_sensor.init(A7, 15);
+  BR_sensor.init(A6, 14);
 
   setLegJointIDS();
 
@@ -115,6 +129,7 @@ void loop() {
   } else {
     detach_servos();
   }
+  update_sensors();
   if (Serial1.available()) {
     serialResponse = Serial1.readStringUntil('\r\n');
     // Convert from String Object to String.
