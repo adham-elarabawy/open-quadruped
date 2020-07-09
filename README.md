@@ -8,8 +8,7 @@ An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walki
 
 ## Current Status
 
-[![Rudimentary Trot Gait 0](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/media/trot_demo.gif)
-[![BodyIK Demo](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/media/bodyik_demo.gif)
+<img src="media/trot_demo.gif" width="350"> <img src="media/bodyik_demo.gif" width="350"> 
 
 ## Papers
 I've been formally documenting this project in the form of papers. You can find them here: [adham-e.dev/papers](https://adham-e.dev/papers)
