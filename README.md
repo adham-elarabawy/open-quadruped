@@ -4,7 +4,7 @@
 [![Open Source Love png2](https://badges.frapsoft.com/os/v2/open-source.png?v=103)](https://github.com/adham-elarabawy)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/adham-elarabawy/OpenQuadruped)
 
-An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walking gaits, Artificial Intelligence & Visual SLAM for dynamic terrain mapping &amp; obstacle avoidance, Self-Balancing.
+An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walking gaits, Artificial Intelligence & Visual SLAM for dynamic terrain mapping &amp; obstacle avoidance.
 
 ## Current Status
 
