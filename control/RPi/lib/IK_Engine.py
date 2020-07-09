@@ -352,33 +352,33 @@ class Quadruped:
             # PITCH CALCULATIONS
             sig_z = sum([leg.z for leg in self.legs]) / 4
             z_i = self.body_dim[0] / 2 * math.sin(pitch)
-            x_i = 10 * self.body_dim[0] / 2 * (1 - math.cos(pitch))
+            # x_i = 10 * self.body_dim[0] / 2 * (1 - math.cos(pitch))
             for i, leg in enumerate(self.legs):
-                if i == 1 or i == 2:
+                if i == 1 or i == 2:  # front
                     self.legs[i].z = sig_z + z_i
-                    leg.x = self.legs[i].x - x_i
-                if i == 0 or i == 3:
+                    # leg.x = self.legs[i].x - x_i
+                if i == 0 or i == 3:  # back
                     self.legs[i].z = sig_z - z_i
-                    leg.x = self.legs[i].x - x_i
+                    # leg.x = self.legs[i].x - x_i
 
-            # ROLL CALCULATIONS
-            sig_z_front = (self.legs[1].z + self.legs[2].z) / 2
-            sig_z_back = (self.legs[0].z + self.legs[3].z) / 2
-            z_i = self.body_dim[1] / 2 * math.sin(roll)
-            y_i = (self.body_dim[1] / 2) * (1 - math.cos(roll))
-            for i, leg in enumerate(self.legs):
-                if i == 0:
-                    self.legs[i].z = sig_z_back + z_i
-                    self.legs[i].y += y_i
-                if i == 1:
-                    self.legs[i].z = sig_z_front + z_i
-                    self.legs[i].y += y_i
-                if i == 2:
-                    self.legs[i].z = sig_z_front - z_i
-                    self.legs[i].y += y_i
-                if i == 3:
-                    self.legs[i].z = sig_z_back - z_i
-                    self.legs[i].y += y_i
+            # # ROLL CALCULATIONS
+            # sig_z_front = (self.legs[1].z + self.legs[2].z) / 2
+            # sig_z_back = (self.legs[0].z + self.legs[3].z) / 2
+            # z_i = self.body_dim[1] / 2 * math.sin(roll)
+            # y_i = (self.body_dim[1] / 2) * (1 - math.cos(roll))
+            # for i, leg in enumerate(self.legs):
+            #     if i == 0:
+            #         self.legs[i].z = sig_z_back + z_i
+            #         self.legs[i].y += y_i
+            #     if i == 1:
+            #         self.legs[i].z = sig_z_front + z_i
+            #         self.legs[i].y += y_i
+            #     if i == 2:
+            #         self.legs[i].z = sig_z_front - z_i
+            #         self.legs[i].y += y_i
+            #     if i == 3:
+            #         self.legs[i].z = sig_z_back - z_i
+            #         self.legs[i].y += y_i
         except:
             print("Out of bounds.")
         self.fully_define(self.get_points_from_buffer())

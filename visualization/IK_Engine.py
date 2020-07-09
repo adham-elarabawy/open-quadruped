@@ -251,10 +251,10 @@ class Quadruped:
         for leg in self.legs:
             leg.origin = leg.init_origin
         self.origin = self.init_origin
-        starting_points = [(50, 70, self.height),
-                           (-50, 70, self.height),
-                           (-50, 70, self.height),
-                           (50, 70, self.height)]
+        starting_points = [(50, 80, self.height),
+                           (-50, 80, self.height),
+                           (-50, 80, self.height),
+                           (50, 80, self.height)]
         self.fully_define(starting_points)
         if DEBUG:
             for leg in self.legs:
@@ -352,27 +352,28 @@ class Quadruped:
             # PITCH CALCULATIONS
             sig_z = sum([leg.z for leg in self.legs]) / 4
             z_i = self.body_dim[0] / 2 * math.sin(pitch)
-            x_i = 10 * self.body_dim[0] / 2 * (1 - math.cos(pitch))
+            x_i = z_i / math.tan((math.pi / 2 - pitch) / 2)
             for i, leg in enumerate(self.legs):
-                if i == 1 or i == 2:
+                if i == 1 or i == 2:  # front
                     self.legs[i].z = sig_z + z_i
-                    leg.x = self.legs[i].x - x_i
-                if i == 0 or i == 3:
+                    self.legs[i].x = self.legs[i].x - x_i
+                if i == 0 or i == 3:  # back
                     self.legs[i].z = sig_z - z_i
-                    leg.x = self.legs[i].x - x_i
+                    self.legs[i].x = self.legs[i].x - x_i
 
             # ROLL CALCULATIONS
             sig_z_front = (self.legs[1].z + self.legs[2].z) / 2
             sig_z_back = (self.legs[0].z + self.legs[3].z) / 2
             z_i = self.body_dim[1] / 2 * math.sin(roll)
-            y_i = (self.body_dim[1] / 2) * (1 - math.cos(roll))
+            y_i = z_i / math.tan((math.pi / 2 - roll) / 2)
+            print(y_i)
             for i, leg in enumerate(self.legs):
                 if i == 0:
                     self.legs[i].z = sig_z_back + z_i
-                    self.legs[i].y += y_i
+                    self.legs[i].y -= y_i
                 if i == 1:
                     self.legs[i].z = sig_z_front + z_i
-                    self.legs[i].y += y_i
+                    self.legs[i].y -= y_i
                 if i == 2:
                     self.legs[i].z = sig_z_front - z_i
                     self.legs[i].y += y_i
