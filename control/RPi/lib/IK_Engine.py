@@ -76,7 +76,7 @@ class InverseKinematics:
 
 class Quadruped:
 
-    def __init__(self, ax=0, origin=(0, 0, 100), body_dim=(300, 150), limb_lengths=(107, 130), offsets=(10, 60), height=170):
+    def __init__(self, ax=0, origin=(0, 0, 100), body_dim=(230, 78), limb_lengths=(107, 130), offsets=(10, 60), height=170):
         '''
         body_dim: (length, width,thickness) in mm
         limb_lengths: (upper_arm, bottom_arm) in mm
@@ -352,7 +352,7 @@ class Quadruped:
             # PITCH CALCULATIONS
             sig_z = sum([leg.z for leg in self.legs]) / 4
             z_i = self.body_dim[0] / 2 * math.sin(pitch)
-            x_i = z_i / math.tan((math.pi / 2 - pitch) / 2)
+            x_i = z_i / math.tan((math.pi - pitch) / 2)
             for i, leg in enumerate(self.legs):
                 if i == 1 or i == 2:  # front
                     self.legs[i].z = sig_z + z_i
@@ -365,21 +365,21 @@ class Quadruped:
             sig_z_front = (self.legs[1].z + self.legs[2].z) / 2
             sig_z_back = (self.legs[0].z + self.legs[3].z) / 2
             z_i = self.body_dim[1] / 2 * math.sin(roll)
-            y_i = z_i / math.tan((math.pi / 2 - roll) / 2)
+            y_i = -z_i / math.tan((math.pi - roll) / 2)
             print(y_i)
             for i, leg in enumerate(self.legs):
                 if i == 0:
                     self.legs[i].z = sig_z_back + z_i
-                    self.legs[i].y -= y_i
+                    leg.y -= y_i
                 if i == 1:
                     self.legs[i].z = sig_z_front + z_i
-                    self.legs[i].y -= y_i
+                    leg.y -= y_i
                 if i == 2:
                     self.legs[i].z = sig_z_front - z_i
-                    self.legs[i].y += y_i
+                    leg.y += y_i
                 if i == 3:
                     self.legs[i].z = sig_z_back - z_i
-                    self.legs[i].y += y_i
+                    leg.y += y_i
         except:
             print("Out of bounds.")
         self.fully_define(self.get_points_from_buffer())
