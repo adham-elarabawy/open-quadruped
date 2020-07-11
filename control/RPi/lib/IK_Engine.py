@@ -366,7 +366,6 @@ class Quadruped:
             sig_z_back = (self.legs[0].z + self.legs[3].z) / 2
             z_i = self.body_dim[1] / 2 * math.sin(roll)
             y_i = -z_i / math.tan((math.pi - roll) / 2)
-            print(y_i)
             for i, leg in enumerate(self.legs):
                 if i == 0:
                     self.legs[i].z = sig_z_back + z_i

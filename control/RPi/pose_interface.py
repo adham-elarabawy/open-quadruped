@@ -3,97 +3,88 @@ import time
 
 import serial
 
+from approxeng.input.selectbinder import ControllerResource
 from lib.IK_Engine import Quadruped
 from lib.LLC_Interface import LLC_Interface
-from lib.xbox import Joystick
+from pytictoc import TicToc
 
-joy = Joystick()
+# Setting up low-level controller interface
 llc = LLC_Interface()
 
 # Setting up Quadruped
 robot = Quadruped(origin=(0, 0, 0), height=170)
-x_shift = y_shift = z_shift = yaw_shift = roll_shift = 0
-x_bound = y_bound = z_bound = 50
-roll_bound = 30
+
+# Setting up performance metrics
+t = TicToc()
+DEBUG = True
+
+# Limits
+y_bound = 50
+z_bound = 60
 pitch_bound = 18
-dampening_rate = 1
+yaw_bound = 30
 
-alpha = 0.7
-prev_joy_x = prev_joy_y = prev_joy_x_r = prev_joy_y_r = 0
+# Controller Values
+left_joy = [0, 0]
+right_joy = [0, 0]
+dpad = [0, 0]
 
-deadzone = 0.2
+# Controller Parameters
+dpad_res = 5  # how many clicks in each direction to reach axis bound
 
-while not joy.Back():
-    data_received = ""
-    line = ""
-    start_time = time.time()
 
-    # joystick filtering:
+while True:
+    try:
+        with ControllerResource() as joystick:
+            print('Found a joystick and connected')
+            while joystick.connected:
+                t.tic()
+                # Instance of approxeng.input.ButtonPresses
+                presses = joystick.check_presses()
+                left_joy = [joystick.lx, joystick.ly]
+                right_joy = [joystick.rx, joystick.ry]
+                if joystick.presses.dleft:
+                    if dpad[0] > -1:
+                        dpad[0] -= 1 / dpad_res
+                if joystick.presses.dright:
+                    if dpad[0] < 1:
+                        dpad[0] += 1 / dpad_res
+                if joystick.presses.ddown:
+                    if dpad[1] > -1:
+                        dpad[1] -= 1 / dpad_res
+                if joystick.presses.dup:
+                    if dpad[1] < 1:
+                        dpad[1] += 1 / dpad_res
 
-    prefilter_x = -joy.leftX()
-    prefilter_y = joy.leftY()
-    prefilter_x_r = -joy.rightX()
-    prefilter_y_r = joy.rightY()
+                # Going to starting pose
+                robot.start_position()
+                # Shifting robot pose in cartesian system x-y-z (body-relative)
+                robot.shift_body_xyz(0, y_bound * dpad[0], z_bound * dpad[1])
+                # Shifting robot pose in Euler Angles yaw-pitch-roll (body-relative)
+                robot.shift_body_rotation(math.radians(
+                    yaw_bound * left_joy[0]), math.radians(pitch_bound * left_joy[1]), 0)
 
-    if prefilter_x < deadzone and prefilter_x > -deadzone:
-        prefilter_x = 0
-    if prefilter_y < deadzone and prefilter_y > -deadzone:
-        prefilter_y = 0
-    if prefilter_x_r < deadzone and prefilter_x_r > -deadzone:
-        prefilter_x_r = 0
-    if prefilter_y_r < deadzone and prefilter_y_r > -deadzone:
-        prefilter_y_r = 0
+                fl = robot.legs[2]
+                fr = robot.legs[1]
+                bl = robot.legs[3]
+                br = robot.legs[0]
+                legs = [fl, fr, bl, br]
 
-    joy_x = round(alpha * prev_joy_x + (1 - alpha) * prefilter_x, 1)
-    joy_y = round(alpha * prev_joy_y + (1 - alpha) * prefilter_y, 1)
-    joy_x_r = round(alpha * prev_joy_x_r + (1 - alpha) * prefilter_x_r, 1)
-    joy_y_r = round(alpha * prev_joy_y_r + (1 - alpha) * prefilter_y_r, 1)
+                for i, leg in enumerate(legs):
 
-    prev_joy_x = joy_x
-    prev_joy_y = joy_y
-    prev_joy_x_r = joy_x_r
-    prev_joy_y_r = joy_y_r
+                    x = round(leg.x, 1)
+                    y = round(leg.y, 1)
+                    z = round(leg.z, 1)
 
-    x_shift = round(x_bound * joy_y, 1)
-    y_shift = round(y_bound * joy_x, 1)
-    z_shift += round(dampening_rate * (joy.dpadUp() - joy.dpadDown()), 1)
-    roll_shift = round(roll_bound * joy_x_r, 1)
-    pitch_shift = round(pitch_bound * joy_y_r, 1)
-    yaw_shift += round(dampening_rate / 5 *
-                       (joy.dpadRight() - joy.dpadLeft()), 1)
-    if (z_shift > z_bound):
-        z_shift = z_bound
-    if (z_shift < -z_bound):
-        z_shift = -z_bound
-    if (joy.Y()):
-        x_shift = y_shift = z_shift = yaw_shift = roll_shift = pitch_shift = 0
-    if (joy.B()):
-        x_shift = y_shift = yaw_shift = roll_shift = pitch_shift = 0
-        z_shift = -140
-    # Going to starting pose
-    robot.start_position()
-    # Shifting robot pose in cartesian system x-y-z (body-relative)
-    robot.shift_body_xyz(x_shift, y_shift, z_shift)
-    # Shifting robot pose in Euler Angles yaw-pitch-roll (body-relative)
-    robot.shift_body_rotation(math.radians(
-        yaw_shift), math.radians(pitch_shift), math.radians(roll_shift))
+                    llc.add_to_buffer(i, x, y, z)
 
-    fl = robot.legs[2]
-    fr = robot.legs[1]
-    bl = robot.legs[3]
-    br = robot.legs[0]
-    legs = [fl, fr, bl, br]
+                llc.send_buffer()
 
-    for i, leg in enumerate(legs):
-
-        x = round(leg.x, 1)
-        y = round(leg.y, 1)
-        z = round(leg.z, 1)
-
-        llc.add_to_buffer(i, x, y, z)
-
-    llc.send_buffer()
-    print(
-        f'fps: {round(1/(time.time() - start_time), 1)}', end='\r')
-
-joy.close()
+                if DEBUG:
+                    print(
+                        f'fps: {round(1/t.tocvalue(), 1)}, left: {left_joy}, right: {right_joy}, dpad: {dpad}', end='\r')
+        print('Connection to joystick lost')
+    except IOError:
+        # No joystick found, wait for a bit before trying again
+        print('Unable to find any joysticks')
+        time.sleep(1)

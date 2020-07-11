@@ -3,7 +3,12 @@ import serial
 
 class LLC_Interface:
     def __init__(self, port='/dev/ttyS0', baud=500000):
-        self.ser = serial.Serial(port, baud)
+        try:
+            self.ser = serial.Serial(port, baud)
+        except serial.SerialException:
+            print(
+                f'[LLC_Interface] FATAL ERROR: Cannot connect to Teensy @ serial port: {port}.')
+            exit()
         self.ser.flush()
 
         self.buffer = []
