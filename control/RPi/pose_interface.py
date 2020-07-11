@@ -56,6 +56,15 @@ while True:
                     if dpad[1] < 1:
                         dpad[1] += 1 / dpad_res
 
+                if joystick.presses.triangle:
+                    left_joy = [0, 0]
+                    right_joy = [0, 0]
+                    dpad = [0, 0]
+
+                if joystick.presses.circle:
+                    print('\nExiting...')
+                    exit()
+
                 # Going to starting pose
                 robot.start_position()
                 # Shifting robot pose in cartesian system x-y-z (body-relative)
