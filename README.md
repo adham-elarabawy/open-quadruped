@@ -30,6 +30,8 @@ You can find the gerber files for the custom pcb in the [hardware folder](https:
 
 <img src="hardware/SinglePCB.png" height="500">
 
+You can find the bill of materials for this project [here](https://docs.google.com/spreadsheets/d/12QX1ca9LHZEThukprlz0DARR9_lmf6FJI8Tg-O4qcdc/edit?usp=sharing).
+
 ## Visualization Usage
 To try the visualization tool out, you'll need to run the [animate.py](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/visualization/animate.py) python file with the proper libraries installed. (matplotlib 3.0.3 supported).
 
