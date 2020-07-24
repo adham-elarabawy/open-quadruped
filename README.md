@@ -20,7 +20,7 @@ In the [model](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/mode
 
 
 #### Renders
-<img src="media/SideView.jpg" width="400"> <img src="media/OpenQuadruped.png" width="400">
+<img src="media/SideView.png" width="400"> <img src="media/OpenQuadruped.png" width="400">
 
 
 ## Hardware
@@ -28,9 +28,9 @@ I made a custom pcb board to control the position and speed of 12 servos simulta
 
 You can find the gerber files for the custom pcb in the [hardware folder](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/hardware) in this repository.
 
-There are two versions: one that uses one power source to power all 12 servos and one that uses two power sources to power all 12 servos (in case of 2 batteries or two lower-current UBECs/Voltage regulators). Both version offer access to the teensy's serial pins, two I2C breakouts (in case you want to connect sensors) and a regulated 5V rail. The board uses 2mm wide traces + 2 ground planes in order to properly dissipate heat for high currents.
+<img src="hardware/SinglePCB.png" height="500">
 
-<img src="hardware/SinglePCB.png" height="500"> <img src="hardware/DoublePCB.png" height="500">
+You can find the bill of materials for this project [here](https://docs.google.com/spreadsheets/d/12QX1ca9LHZEThukprlz0DARR9_lmf6FJI8Tg-O4qcdc/edit?usp=sharing).
 
 ## Visualization Usage
 To try the visualization tool out, you'll need to run the [animate.py](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/visualization/animate.py) python file with the proper libraries installed. (matplotlib 3.0.3 supported).
