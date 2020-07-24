@@ -1,3 +1,4 @@
+import math
 from math import factorial
 
 import numpy as np
@@ -15,6 +16,16 @@ class Bezier:
     @staticmethod
     def bin_coeff(n, i):
         return factorial(n) / (factorial(i) * factorial(n - i))
+
+    @staticmethod
+    def rotateAboutZ(x, z, theta):
+        theta = math.radians(theta)
+        R = np.array([[np.cos(theta), -np.sin(theta), 0],
+                      [np.sin(theta), np.cos(theta), 0],
+                      [0, 0, 1]])
+        v = np.array([x, 0, z])
+        rotated = R.dot(v)
+        return rotated
 
     def sample_bezier(self, t):
         x = 0

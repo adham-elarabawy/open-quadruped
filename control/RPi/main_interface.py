@@ -20,15 +20,17 @@ mode = 'pose'
 
 # Setting up performance metrics
 t = TicToc()
-DEBUG = True  # whether or not to show fps/joystick vals
+DEBUG = False  # whether or not to show fps/joystick vals
 
 # Gaits
 #gait_name = GaitParameters(phase_lag, T_swing, L_span, v_d, penetration_alpha, base_height, y, x_shift, clearance)
 crawl = GaitParameters([0, 0.5, 0.75, 0.25], 0.4, 70, 50, 5, 160, 55, -25, 25)
 trot = GaitParameters([0, 0.5, 0.5, 0], 0.3, 50, 100, 5, 150, 55, -40, 5)
+fast_trot = GaitParameters([0, 0.5, 0.5, 0], 0.2,
+                           40, 130, 5, 150, 60, -60, 10)
 
 # **CHANGE SELECTED GAIT HERE ** #
-gait = trot
+gait = fast_trot
 
 # Setting up Gait Planner & Trajectories
 planner = GaitPlanner(gait.T_stance, gait.T_swing, gait.phase_lag)
@@ -59,34 +61,35 @@ while True:
             while joystick.connected:
                 t.tic()
 
+                # Instance of approxeng.input.ButtonPresses
+                presses = joystick.check_presses()
+                left_joy = [joystick.lx, joystick.ly]
+                right_joy = [joystick.rx, joystick.ry]
+                if joystick.presses.dleft:
+                    if dpad[0] > -1:
+                        dpad[0] -= 1 / dpad_res
+                if joystick.presses.dright:
+                    if dpad[0] < 1:
+                        dpad[0] += 1 / dpad_res
+                if joystick.presses.ddown:
+                    if dpad[1] > -1:
+                        dpad[1] -= 1 / dpad_res
+                if joystick.presses.dup:
+                    if dpad[1] < 1:
+                        dpad[1] += 1 / dpad_res
+
+                if joystick.presses.triangle:
+                    left_joy = [0, 0]
+                    right_joy = [0, 0]
+                    dpad = [0, 0]
+
+                if joystick.presses.circle:
+                    print('\nExiting...')
+                    exit()
+
                 if(joystick.r1 == None):
                     mode = 'pose'
                     # BODY POSE MODE
-                    # Instance of approxeng.input.ButtonPresses
-                    presses = joystick.check_presses()
-                    left_joy = [joystick.lx, joystick.ly]
-                    right_joy = [joystick.rx, joystick.ry]
-                    if joystick.presses.dleft:
-                        if dpad[0] > -1:
-                            dpad[0] -= 1 / dpad_res
-                    if joystick.presses.dright:
-                        if dpad[0] < 1:
-                            dpad[0] += 1 / dpad_res
-                    if joystick.presses.ddown:
-                        if dpad[1] > -1:
-                            dpad[1] -= 1 / dpad_res
-                    if joystick.presses.dup:
-                        if dpad[1] < 1:
-                            dpad[1] += 1 / dpad_res
-
-                    if joystick.presses.triangle:
-                        left_joy = [0, 0]
-                        right_joy = [0, 0]
-                        dpad = [0, 0]
-
-                    if joystick.presses.circle:
-                        print('\nExiting...')
-                        exit()
 
                     # Going to starting pose
                     robot.start_position()
@@ -127,8 +130,15 @@ while True:
                         if signal[0] == 1:
                             x, z = swing.sample_bezier(signal[1])
 
+                        if right_joy[1] < -0.2:
+                            theta = 180
+                        else:
+                            theta = right_joy[0] * 90
+
+                        x, y, z = Bezier.rotateAboutZ(x, z, theta)
+
                         llc.add_to_buffer(i, round(x + gait.x_shift, 1),
-                                          round(gait.y, 1), round(z, 1))
+                                          round(y + gait.y, 1), round(z, 1))
                     llc.send_buffer()
                 if DEBUG:
                     print(
