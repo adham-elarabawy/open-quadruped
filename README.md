@@ -19,7 +19,7 @@ I've been formally documenting this project in the form of papers. You can find 
 In the [model](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/model) folder, you can find all of the step & stl files that I used for my build of OpenQuadruped. There, you can also find a Bill of Materials, and some guides (in progress). 
 
 
-#### Images
+#### Renders
 <img src="model/leg.png" width="400"> <img src="model/hip.png" width="400"> <img src="model/custom_plate.png" width="400">
 
 
