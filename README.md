@@ -20,7 +20,7 @@ In the [model](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/mode
 
 
 #### Renders
-<img src="model/leg.png" width="400"> <img src="model/hip.png" width="400"> <img src="model/custom_plate.png" width="400">
+<img src="media/Side_View.jpg" width="400"> <img src="media/OpenQuadruped.png" width="400">
 
 
 ## Hardware
