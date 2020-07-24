@@ -6,6 +6,8 @@
 
 An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walking gaits, Artificial Intelligence & Visual SLAM for dynamic terrain mapping &amp; obstacle avoidance.
 
+<img src="media/SideView.png" width="400"> <img src="media/OpenQuadruped.png" width="400">
+
 ## Current Status
 
 :warning: **Currently undergoing major design changes**: Leg design is changing drastically to move all actuators closer to the hip.
@@ -17,11 +19,6 @@ I've been formally documenting this project in the form of papers. You can find 
 
 ## 3D Model
 In the [model](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/model) folder, you can find all of the step & stl files that I used for my build of OpenQuadruped. There, you can also find a Bill of Materials, and some guides (in progress). 
-
-
-#### Renders
-<img src="media/SideView.png" width="400"> <img src="media/OpenQuadruped.png" width="400">
-
 
 ## Hardware
 I made a custom pcb board to control the position and speed of 12 servos simultaneously, as well as interface with all of the sensors.
