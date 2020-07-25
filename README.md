@@ -10,9 +10,9 @@ An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walki
 
 ## Current Status
 
-Software :warning: **Currently undergoing major design changes**: Implementing ROS infrastructure for all control processes.
+:warning: **Software currently undergoing major design changes**: Implementing ROS infrastructure for all control processes.
 
-Hardware :warning: **Currently undergoing major design changes**: Leg design is changing drastically to move all actuators closer to the hip.
+:warning: **Hardware currently undergoing major design changes**: Leg design is changing drastically to move all actuators closer to the hip.
 
 <img src="media/trot_demo.gif" width="350"> <img src="media/bodyik_demo.gif" width="350"> 
 
