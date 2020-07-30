@@ -11,6 +11,7 @@ An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walki
 ## Current Status
 ### To-Do List:
 :warning: Implementing ROS infrastructure for all control processes.
+
 :warning: Writing full Pytest unit tests. 
 
 <img src="media/trot_demo.gif" width="350"> <img src="media/bodyik_demo.gif" width="350"> 
