@@ -9,10 +9,16 @@ An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walki
 <img src="media/SideView.png" width="400"> <img src="media/OpenQuadruped.png" width="400">
 
 ## Current Status
-### To-Do List:
-:warning: Implementing ROS infrastructure for all control processes.
+### To-Do List
 
-:warning: Writing full Pytest unit tests. 
+- [x] *Hardware* // Redesign legs to move actuators closer to hip + reinforce all servo mounting.
+- [ ] *Design* // Research transition between gait & body pose.
+- [ ] *Software* // Move gait planner to teensy.
+- [ ] *Software* // Implementing ROS infrastructure for all control processes (including cpp on teensy).
+- [ ] *Software* // Write & automate pytest unit tests.
+- [ ] *Software* // Integrate unit tests with github actions.
+- [ ] *Simulation* // Create URDF model.
+- [ ] *Simulation* // Gazebo vs pybullet design decision... etc
 
 <img src="media/trot_demo.gif" width="350"> <img src="media/bodyik_demo.gif" width="350"> 
 
