@@ -4,6 +4,8 @@
 #include "InverseKinematics.h"
 #include "Util.h"
 #include <Servo.h>
+#include <ros.h>
+// TODO: Include the message header file
 
 using namespace std;
 
@@ -13,7 +15,7 @@ char msg1[] = "0,-999.9,-999.9,-999.9,-999.9,-999.9,-999.9"; // general structur
 bool ESTOPPED = false;
 int max_speed = 500; // deg / sec
 
-
+ros::NodeHandle nh;
 AdvServo BR_Hip, BR_Shoulder, BR_Wrist, BL_Hip, BL_Shoulder, BL_Wrist, FR_Hip, FR_Shoulder, FR_Wrist, FL_Hip, FL_Shoulder, FL_Wrist;
 FootSensor FL_sensor, FR_sensor, BL_sensor, BR_sensor;
 AdvServo * hips[4] = {&FL_Hip, &FR_Hip, &BL_Hip, &BR_Hip};
@@ -90,9 +92,16 @@ void setLegJointIDS() {
 
 }
 
-void setup() {
-  Serial1.begin(500000);
+void callback( const pose_msg::LegPoses& leg_poses){
+  
+}
 
+
+ros::Subscriber<pose_msg::LegPoses> sub("leg_poses", &callback);
+
+void setup() {
+  nh.initNode();
+  nh.subscribe(sub);
   ik.init(8.7, 59, 107, 130); // hip offset 0, hip_offset 1, shoulder length, wrist length
 
   // HIPS
@@ -124,6 +133,7 @@ void setup() {
 }
 
 void loop() {
+  nh.spinOnce();
   if(!ESTOPPED){
     update_servos();
   } else {
