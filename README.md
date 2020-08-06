@@ -25,6 +25,9 @@ An open-source 3D-printed quadrupedal robot. Motion Algorithms for dynamic walki
 ## Papers
 I've been formally documenting this project in the form of papers. You can find them here: [adham-e.dev/papers](https://adham-e.dev/papers)
 
+## Documentation
+I'm hosting most of the documentation for this project on [this repo's wiki](https://github.com/adham-elarabawy/OpenQuadruped/wiki).
+
 ## 3D Model
 In the [model](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/model) folder, you can find all of the step & stl files that I used for my build of OpenQuadruped. There, you can also find a Bill of Materials, and some guides (in progress). 
 
