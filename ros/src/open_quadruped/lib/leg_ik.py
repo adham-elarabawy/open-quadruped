@@ -40,5 +40,3 @@ class LegIKModel:
             print("Out of Bounds.")
 
         return joint_angles
-
-
