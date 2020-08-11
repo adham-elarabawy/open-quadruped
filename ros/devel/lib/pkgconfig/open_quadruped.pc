@@ -3,6 +3,6 @@ prefix=/home/aelarabawy/OpenQuadruped/ros/devel
 Name: open_quadruped
 Description: Description of open_quadruped
 Version: 0.0.0
-Cflags: 
+Cflags: -I/home/aelarabawy/OpenQuadruped/ros/devel/include
 Libs: -L${prefix}/lib 
-Requires: 
+Requires: message_runtime
