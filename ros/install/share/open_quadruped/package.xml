@@ -7,7 +7,7 @@
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="aelarabawy@todo.todo">aelarabawy</maintainer>
+  <maintainer email="adhamelarabawy@gmail.com">Adham Elarabawy</maintainer>
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
@@ -54,6 +54,7 @@
   <build_depend>rospy</build_depend>
   <build_depend>rosserial_python</build_depend>
   <build_depend>std_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
   <build_export_depend>joy</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
@@ -64,6 +65,7 @@
   <exec_depend>rospy</exec_depend>
   <exec_depend>rosserial_python</exec_depend>
   <exec_depend>std_msgs</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
