@@ -1,5 +1,5 @@
-#ifndef _ROS_open_quadruped_joint_angles_h
-#define _ROS_open_quadruped_joint_angles_h
+#ifndef _ROS_open_quadruped_JointAngles_h
+#define _ROS_open_quadruped_JointAngles_h
 
 #include <stdint.h>
 #include <string.h>
@@ -9,7 +9,7 @@
 namespace open_quadruped
 {
 
-  class joint_angles : public ros::Msg
+  class JointAngles : public ros::Msg
   {
     public:
       uint32_t fl_length;
@@ -29,7 +29,7 @@ namespace open_quadruped
       _br_type st_br;
       _br_type * br;
 
-    joint_angles():
+    JointAngles():
       fl_length(0), fl(NULL),
       fr_length(0), fr(NULL),
       bl_length(0), bl(NULL),
@@ -205,7 +205,7 @@ namespace open_quadruped
      return offset;
     }
 
-    const char * getType(){ return "open_quadruped/joint_angles"; };
+    const char * getType(){ return "open_quadruped/JointAngles"; };
     const char * getMD5(){ return "cc955e0566b06523084e350c65b2944e"; };
 
   };
