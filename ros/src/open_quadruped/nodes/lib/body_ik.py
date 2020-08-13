@@ -10,11 +10,7 @@ class BodyIKModel:
      
      methods: transform, get_htf_vectors
      """
-    def __init__(self, width, length, height):
-        self.width = width
-        self.length = length
-        self.height = height
-
+    def reset_pose(self):
         self.body_points = np.array([[length/2, -width/2, height],
                                      [length/2, width/2, height],
                                      [-length/2, -width/2, height], 
@@ -24,6 +20,12 @@ class BodyIKModel:
                                      [length/2, width/2, 0],
                                      [-length/2, -width/2, 0], 
                                      [-length/2, width/2, 0]])
+    def __init__(self, width, length, height):
+        self.width = width
+        self.length = length
+        self.height = height
+
+        self.reset_pose()
         
     def transform(self, yaw, pitch, roll):
         # yaw rotation

@@ -35,7 +35,7 @@ class LegIKModel:
                     (h**2 + self.upper**2 - self.lower**2) / (2 * h * self.upper)) - phi
                 theta_w = math.acos((self.lower**2 + self.upper **
                                      2 - h**2) / (2 * self.lower * self.upper))
-                joint_angles.append((theta_h, theta_s, theta_w))
+                joint_angles.append([theta_h, theta_s, theta_w])
         except:
             print("Out of Bounds.")
 
