@@ -46,33 +46,34 @@ if __name__=='__main__':
     rate=rospy.Rate(10) # publish rate: 10 hz
  
     while not rospy.is_shutdown():
-        if mode == body_mode:
-            debug = 'in body mode'
+        if not (axes is None or buttons is None):
+            if mode == body_mode:
+                debug = 'in body mode'
 
-            # use joystick values + limits to figure out desired euler angle representation
-            yaw = axes[2] * yaw_limit
-            pitch = axes[5] * pitch_limit
-            roll = axes[0] * roll_limit
+                # use joystick values + limits to figure out desired euler angle representation
+                yaw = axes[2] * yaw_limit
+                pitch = axes[5] * pitch_limit
+                roll = axes[0] * roll_limit
 
-            # use the body IK model to figure out the hip-to-foot vectors needed for the desired pose
-            body_model.reset_pose()
-            body_model.transform(math.radians(yaw), math.radians(pitch), math.radians(roll))
-            htf_vecs = body_model.get_htf_vectors()
+                # use the body IK model to figure out the hip-to-foot vectors needed for the desired pose
+                body_model.reset_pose()
+                body_model.transform(math.radians(yaw), math.radians(pitch), math.radians(roll))
+                htf_vecs = body_model.get_htf_vectors()
 
-        elif mode == gait_mode:
-            debug = 'in gait mode'
-        rospy.loginfo(debug)
+            elif mode == gait_mode:
+                debug = 'in gait mode'
+            rospy.loginfo(debug)
 
-        # convert the hip-to-foot vectors into joint angles using leg IK model
-        ja_m = leg_model.ja_from_htf_vecs(htf_vecs)
+            # convert the hip-to-foot vectors into joint angles using leg IK model
+            ja_m = leg_model.ja_from_htf_vecs(htf_vecs)
 
-        # populate the JointAngles ros message
-        ja = JointAngles()
-        ja.fl = ja_m[0]
-        ja.fr = ja_m[1]
-        ja.bl = ja_m[2]
-        ja.br = ja_m[3]
- 
-        #publishing JointAngles message to topic
-        pub.publish(ja)
-        rate.sleep()
+            # populate the JointAngles ros message
+            ja = JointAngles()
+            ja.fl = ja_m[0]
+            ja.fr = ja_m[1]
+            ja.bl = ja_m[2]
+            ja.br = ja_m[3]
+     
+            #publishing JointAngles message to topic
+            pub.publish(ja)
+            rate.sleep()
