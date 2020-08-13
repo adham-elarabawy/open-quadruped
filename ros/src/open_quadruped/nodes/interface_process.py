@@ -30,11 +30,12 @@ axes = None
 def controller_callback(msg):
     global mode, body_mode, gait_mode, buttons, axes
     if msg.buttons[7] == 1:
-        mode = gait_mode else:
+        mode = gait_mode 
+    else:
         mode = body_mode
+
     buttons = msg.buttons
     axes = msg.axes
-#    rospy.loginfo(str(mode))
  
 if __name__=='__main__':
 
