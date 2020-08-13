@@ -11,6 +11,12 @@ class BodyIKModel:
      methods: transform, get_htf_vectors
      """
     def reset_pose(self):
+
+        # only doing this for sake of concision
+        length = self.length
+        width = self.width
+        height = self.height
+
         self.body_points = np.array([[length/2, -width/2, height],
                                      [length/2, width/2, height],
                                      [-length/2, -width/2, height], 

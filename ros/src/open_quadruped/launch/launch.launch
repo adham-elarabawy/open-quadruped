@@ -1,4 +1,4 @@
 <launch>
 <node pkg="joy" type="joy_node" name="joy_node"/>
-<node pkg="open_quadruped" type="interface_process.py" name="interface_process.py"/>
+<node pkg="open_quadruped" type="interface_process.py" name="interface_process"/>
 </launch>
