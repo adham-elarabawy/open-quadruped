@@ -1,8 +1,0 @@
-prefix=/home/aelarabawy/OpenQuadruped/ros/install
-
-Name: open_quadruped
-Description: Description of open_quadruped
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib 
-Requires: message_runtime
