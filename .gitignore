@@ -1,6 +1,6 @@
 # ROS environment-specific files
-ros_workspace/devel/*
-ros_workspace/install/*
+ros-workspace/devel/*
+ros-workspace/install/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
