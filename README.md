@@ -36,7 +36,7 @@ I made a custom pcb board to control the position and speed of 12 servos simulta
 
 You can find the gerber files for the custom pcb in the [hardware folder](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/hardware) in this repository.
 
-<img src="hardware/SinglePCB.png" height="500">
+<img src="hardware/PCB/SinglePCB.png" height="500">
 
 You can find the bill of materials for this project [here](https://docs.google.com/spreadsheets/d/12QX1ca9LHZEThukprlz0DARR9_lmf6FJI8Tg-O4qcdc/edit?usp=sharing).
 
