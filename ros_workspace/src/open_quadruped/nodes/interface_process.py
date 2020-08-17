@@ -6,7 +6,7 @@ from std_msgs.msg import String, Float32, Int32
 from sensor_msgs.msg import Joy 
 from open_quadruped.msg import JointAngles
 
-from lib import leg_ik, body_ik
+from control-library import leg_ik, body_ik
 
 # body ik params
 yaw_limit = 15
