@@ -1,7 +1,11 @@
+# ROS environment-specific files
+ros_workspace/devel/*
+ros_workspace/install/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 
 # C extensions
 *.so
