@@ -1,8 +1,0 @@
-prefix=/home/aelarabawy/OpenQuadruped/ros/devel
-
-Name: ds4_driver
-Description: Description of ds4_driver
-Version: 0.2.1
-Cflags: -I/home/aelarabawy/OpenQuadruped/ros/devel/include
-Libs: -L${prefix}/lib 
-Requires: 

@@ -1,8 +1,0 @@
-prefix=/home/aelarabawy/OpenQuadruped/ros/devel
-
-Name: experimentation
-Description: Description of experimentation
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
