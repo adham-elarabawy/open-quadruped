@@ -4,6 +4,8 @@
 #include "InverseKinematics.h"
 #include "Util.h"
 #include <Servo.h>
+#include <ros.h>
+// TODO: Include the message header file
 
 using namespace std;
 
@@ -13,7 +15,7 @@ char msg1[] = "0,-999.9,-999.9,-999.9,-999.9,-999.9,-999.9"; // general structur
 bool ESTOPPED = false;
 int max_speed = 500; // deg / sec
 
-
+ros::NodeHandle nh;
 AdvServo BR_Hip, BR_Shoulder, BR_Wrist, BL_Hip, BL_Shoulder, BL_Wrist, FR_Hip, FR_Shoulder, FR_Wrist, FL_Hip, FL_Shoulder, FL_Wrist;
 FootSensor FL_sensor, FR_sensor, BL_sensor, BR_sensor;
 AdvServo * hips[4] = {&FL_Hip, &FR_Hip, &BL_Hip, &BR_Hip};
@@ -90,9 +92,40 @@ void setLegJointIDS() {
 
 }
 
-void setup() {
-  Serial1.begin(500000);
+void callback( const pose_msg::LegPoses& leg_poses){
+  Serial.println("complete message");
+  double *p;
+  p = ik.run(leg, x, y, z);
 
+  double temp_hip = util.toDegrees(*p);
+
+  if(leg == 1 || leg == 2){
+    temp_hip *= -1;
+  }
+  
+  double hip_angle = util.angleConversion(leg, 0, temp_hip);
+  double shoulder_angle = util.angleConversion(leg, 1, util.toDegrees(*(p+1)));
+  double wrist_angle = util.angleConversion(leg, 2, util.toDegrees(*(p+2)));
+  
+  double h_dist = abs(hip_angle - (*hips[leg]).getPosition());
+  double s_dist = abs(shoulder_angle - (*shoulders[leg]).getPosition());
+  double w_dist = abs(wrist_angle - (*wrists[leg]).getPosition());
+
+  double scaling_factor = util.max(h_dist, s_dist, w_dist);
+
+  h_dist /= scaling_factor;
+  s_dist /= scaling_factor;
+  w_dist /= scaling_factor;
+
+  (*hips[leg]).setPosition(hip_angle, max_speed * h_dist);
+  (*shoulders[leg]).setPosition(shoulder_angle, max_speed * s_dist);
+  (*wrists[leg]).setPosition(wrist_angle, max_speed * w_dist);
+}
+
+
+ros::Subscriber<pose_msg::LegPoses> sub("leg_poses", &callback);
+
+void setup() {
   ik.init(8.7, 59, 107, 130); // hip offset 0, hip_offset 1, shoulder length, wrist length
 
   // HIPS
@@ -121,88 +154,17 @@ void setup() {
   setLegJointIDS();
 
   delay(1000);
+
+  nh.initNode();
+  nh.subscribe(sub);
 }
 
 void loop() {
+  nh.spinOnce();
   if(!ESTOPPED){
     update_servos();
   } else {
     detach_servos();
   }
   update_sensors();
-  if (Serial1.available()) {
-    serialResponse = Serial1.readStringUntil('\r\n');
-    // Convert from String Object to String.
-    char buf[sizeof(msg0)];
-    serialResponse.toCharArray(buf, sizeof(buf));
-    char *ptr = buf;
-    char *str;
-    int index = 0;
-    int leg = -1; //0=FL, 1=FR, 2=BL, 3=BR
-    double x = -9999;
-    double y = -9999;
-    double z = -9999;
-    while ((str = strtok_r(ptr, ",", &ptr)) != NULL) { // delimiter is the dash
-      if(strcmp(str, "e") == 0 || strcmp(str, "E") == 0) {
-        ESTOPPED = true;
-      }
-
-      if(index == 0) {
-        util.upper(str);
-        if(strcmp(str, "0") == 0){
-          leg = 0;
-        }
-        if(strcmp(str, "1") == 0){
-          leg = 1;
-        }
-        if(strcmp(str, "2") == 0){
-          leg = 2;
-        }
-        if(strcmp(str, "3") == 0){
-          leg = 3;
-        }
-      }
-      if(index == 1) {
-        x = atof(str);
-      }
-      if(index == 2) {
-        y = atof(str);
-      }
-      if(index == 3) {
-        z = atof(str);
-      }
-      index++;
-    }
-
-    //COMPLETE MESSAGE CHECK
-    if(leg != -9999 || x != -9999 || y != -9999 || z != -9999){
-      Serial.println("complete message");
-      double *p;
-      p = ik.run(leg, x, y, z);
-
-      double temp_hip = util.toDegrees(*p);
-
-      if(leg == 1 || leg == 2){
-        temp_hip *= -1;
-      }
-
-      double hip_angle = util.angleConversion(leg, 0, temp_hip);
-      double shoulder_angle = util.angleConversion(leg, 1, util.toDegrees(*(p+1)));
-      double wrist_angle = util.angleConversion(leg, 2, util.toDegrees(*(p+2)));
-
-      double h_dist = abs(hip_angle - (*hips[leg]).getPosition());
-      double s_dist = abs(shoulder_angle - (*shoulders[leg]).getPosition());
-      double w_dist = abs(wrist_angle - (*wrists[leg]).getPosition());
-
-      double scaling_factor = util.max(h_dist, s_dist, w_dist);
-
-      h_dist /= scaling_factor;
-      s_dist /= scaling_factor;
-      w_dist /= scaling_factor;
-
-      (*hips[leg]).setPosition(hip_angle, max_speed * h_dist);
-      (*shoulders[leg]).setPosition(shoulder_angle, max_speed * s_dist);
-      (*wrists[leg]).setPosition(wrist_angle, max_speed * w_dist);
-    }
-  }
 }
