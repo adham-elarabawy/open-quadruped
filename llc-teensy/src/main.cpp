@@ -5,7 +5,7 @@
 #include "Util.h"
 #include <Servo.h>
 #include <ros.h>
-// TODO: Include the message header file
+#include <open_quadruped/JointAngles.h>
 
 using namespace std;
 
