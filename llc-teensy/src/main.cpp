@@ -92,59 +92,52 @@ void setLegJointIDS() {
 
 }
 
-void callback( const pose_msg::LegPoses& leg_poses){
-  Serial.println("complete message");
-  double *p;
-  p = ik.run(leg, x, y, z);
+void callback( const open_quadruped::JointAngles& joint_angles){
 
-  double temp_hip = util.toDegrees(*p);
-
-  if(leg == 1 || leg == 2){
-    temp_hip *= -1;
+  double ja[4][3] = [joint_angles.fl, joint_angles.fr, joint_angles.bl, joint_angles.br];
+  for(int leg = 0, leg < 4, leg++) {
+    double hip_angle = util.angleConversion(leg, 0, ja[leg][0]);  
+    double shoulder_angle = util.angleConversion(leg, 1, ja[leg][1]);
+    double wrist_angle = util.angleConversion(leg, 2, ja[leg][2]);
+    
+    double h_dist = abs(hip_angle - (*hips[leg]).getPosition());
+    double s_dist = abs(shoulder_angle - (*shoulders[leg]).getPosition());
+    double w_dist = abs(wrist_angle - (*wrists[leg]).getPosition());
+  
+    double scaling_factor = util.max(h_dist, s_dist, w_dist);
+  
+    h_dist /= scaling_factor;
+    s_dist /= scaling_factor;
+    w_dist /= scaling_factor;
+  
+    (*hips[leg]).setPosition(hip_angle, max_speed * h_dist);
+    (*shoulders[leg]).setPosition(shoulder_angle, max_speed * s_dist);
+    (*wrists[leg]).setPosition(wrist_angle, max_speed * w_dist);
   }
-  
-  double hip_angle = util.angleConversion(leg, 0, temp_hip);
-  double shoulder_angle = util.angleConversion(leg, 1, util.toDegrees(*(p+1)));
-  double wrist_angle = util.angleConversion(leg, 2, util.toDegrees(*(p+2)));
-  
-  double h_dist = abs(hip_angle - (*hips[leg]).getPosition());
-  double s_dist = abs(shoulder_angle - (*shoulders[leg]).getPosition());
-  double w_dist = abs(wrist_angle - (*wrists[leg]).getPosition());
-
-  double scaling_factor = util.max(h_dist, s_dist, w_dist);
-
-  h_dist /= scaling_factor;
-  s_dist /= scaling_factor;
-  w_dist /= scaling_factor;
-
-  (*hips[leg]).setPosition(hip_angle, max_speed * h_dist);
-  (*shoulders[leg]).setPosition(shoulder_angle, max_speed * s_dist);
-  (*wrists[leg]).setPosition(wrist_angle, max_speed * w_dist);
 }
 
 
-ros::Subscriber<pose_msg::LegPoses> sub("leg_poses", &callback);
+ros::Subscriber<open_quadruped::JointAngles> sub("joint_angles", &callback);
 
 void setup() {
-  ik.init(8.7, 59, 107, 130); // hip offset 0, hip_offset 1, shoulder length, wrist length
 
   // HIPS
-  FL_Hip.init(4, 135, -2);
+  FL_Hip.init(4, 135, 0);
   FR_Hip.init(11, 135, 0);
   BL_Hip.init(7, 135, 0);
-  BR_Hip.init(8, 135, -3);
+  BR_Hip.init(8, 135, 0);
 
   //SHOULDERS
-  FL_Shoulder.init(2, 180, -3);
-  FR_Shoulder.init(13, 90, -14);
-  BL_Shoulder.init(5, 180, 5); // +
+  FL_Shoulder.init(2, 180, 0);
+  FR_Shoulder.init(13, 90, 0);
+  BL_Shoulder.init(5, 180, 0); // +
   BR_Shoulder.init(10, 90, 0); // -
 
   //WRISTS
-  FL_Wrist.init(3, 0, 2);
-  FR_Wrist.init(12, 270, -2);
-  BL_Wrist.init(6, 0, 2);
-  BR_Wrist.init(9, 270, -1);
+  FL_Wrist.init(3, 0, 0);
+  FR_Wrist.init(12, 270, 0);
+  BL_Wrist.init(6, 0, 0);
+  BR_Wrist.init(9, 270, 0);
 
   FL_sensor.init(A9, 17);
   FR_sensor.init(A8, 16);
