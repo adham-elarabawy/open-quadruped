@@ -1,9 +1,6 @@
 <?xml version="1.0" ?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <material name="orange">
-    <color rgba="1.0 0.5 0.0 1"/>
-  </material>
   <material name="black">
     <color rgba="0.1 0.1 0.1 1"/>
   </material>
@@ -56,9 +53,6 @@
     <gazebo reference="${name}">
         <xacro:if value="${matname == 'black'}">
           <material>Gazebo/Black</material>
-        </xacro:if>
-        <xacro:if value="${matname == 'orange'}">
-          <material>Gazebo/Orange</material>
         </xacro:if>
     </gazebo>
   </xacro:macro>

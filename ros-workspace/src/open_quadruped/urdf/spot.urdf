@@ -4,9 +4,6 @@
 <!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
 <!-- =================================================================================== -->
 <robot name="spot">
-  <material name="orange">
-    <color rgba="1.0 0.5 0.0 1"/>
-  </material>
   <material name="black">
     <color rgba="0.1 0.1 0.1 1"/>
   </material>
@@ -48,7 +45,7 @@
       <geometry>
         <mesh filename="package://mini_ros/stl/OpenQuadruped/MAINBODY.stl" scale="1 1 1"/>
       </geometry>
-      <material name="orange"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 1.57079632679" xyz="0 0 0"/>
@@ -148,7 +145,7 @@
       <geometry>
         <mesh filename="package://mini_ros/stl/OpenQuadruped/Front.stl" scale="1 1 1"/>
       </geometry>
-      <material name="orange"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 1.57079632679" xyz="0.16 0 0.006"/>
@@ -173,7 +170,7 @@
       <geometry>
         <mesh filename="package://mini_ros/stl/OpenQuadruped/Back.stl" scale="1 1 1"/>
       </geometry>
-      <material name="orange"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 1.57079632679" xyz="-0.16 0 0.006"/>
@@ -344,7 +341,7 @@
       <geometry>
         <mesh filename="package://mini_ros/stl/OpenQuadruped/LEFT_FOOT.stl" scale="1 1 1"/>
       </geometry>
-      <material name="orange"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 1.57079632679" xyz="-0.247 -0.068 0.18"/>
@@ -476,7 +473,7 @@
       <geometry>
         <mesh filename="package://mini_ros/stl/OpenQuadruped/LEFT_FOOT.stl" scale="1 1 1"/>
       </geometry>
-      <material name="orange"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 1.57079632679" xyz="-0.247 -0.068 0.18"/>
@@ -608,7 +605,7 @@
       <geometry>
         <mesh filename="package://mini_ros/stl/OpenQuadruped/RIGHT_FOOT.stl" scale="1 1 1"/>
       </geometry>
-      <material name="orange"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 1.57079632679" xyz="-0.247 0.138 0.18"/>
@@ -740,7 +737,7 @@
       <geometry>
         <mesh filename="package://mini_ros/stl/OpenQuadruped/RIGHT_FOOT.stl" scale="1 1 1"/>
       </geometry>
-      <material name="orange"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 1.57079632679" xyz="-0.247 0.138 0.18"/>
