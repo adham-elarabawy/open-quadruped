@@ -12,13 +12,14 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   rosserial_python
+  gazebo_ros
   std_msgs
   sensor_msgs
   message_generation
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(gazebo REQUIRED)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -105,12 +106,14 @@ generate_messages(
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
+
+include_directories(include ${catking_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} ${SDFormat_INCLUDE_DIRS})
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES open_quadruped
 #  CATKIN_DEPENDS joy roscpp rospy rosserial_python std_msgs
   CATKIN_DEPENDS message_runtime
-#  DEPENDS system_lib
+  DEPENDS gazebo_ros 
 )
 
 ###########
