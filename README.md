@@ -43,11 +43,13 @@ I made a custom pcb board to control the position and speed of 12 servos simulta
 
 You can find the gerber files for the custom pcb in the [hardware folder](https://github.com/adham-elarabawy/OpenQuadruped/tree/master/hardware) in this repository.
 
-<img src="hardware/PCB/SinglePCB.png" height="500">
+<img src="hardware/pcb/SinglePCB.png" height="500">
 
 You can find the bill of materials for this project [here](https://docs.google.com/spreadsheets/d/12QX1ca9LHZEThukprlz0DARR9_lmf6FJI8Tg-O4qcdc/edit?usp=sharing).
 
 ## Visualization Usage
+*NOTE: There are 3 different visualization tools: Gazebo Simulator (ROS + Physics), RViz (ROS), & my custom 3d-matplotlib visualization tool (body IK model + leg IK model). The latter tool is still under development, and I haven't ported it to use my new control library yet, so it is likely broken for the time being.*
+
 To try the visualization tool out, you'll need to run the [animate.py](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/visualization/animate.py) python file with the proper libraries installed. (matplotlib 3.0.3 supported).
 
 You can then use keyboard controls: use x, y, z, a, p, r to select (x axis, y axis, z axis, yaw, pitch, roll), and then the up and down buttons to increment the selected position. If you click '1' on your keyboard, it will reset the position. 
