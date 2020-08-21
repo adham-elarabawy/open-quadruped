@@ -1,0 +1,20 @@
+<launch>
+
+<param name="joy_node/dev" value="/dev/input/js1"/>
+<node pkg="joy" type="joy_node" name="joy_node"/>
+<node pkg="open_quadruped" type="interface_process.py" name="interface_process"/>
+
+<!-- Convert an xacro and put on parameter server -->
+<param name="robot_description" command="$(find xacro)/xacro.py $(find open_quadruped)/urdf/spot.urdf.xacro" />
+
+<include file="$(find gazebo_ros)/launch/empty_world.launch">
+  <arg name="paused" value="true"/>
+  <arg name="use_sim_time" value="true"/>
+  <arg name="gui" value="true"/>
+  <arg name="debug" value="false"/>
+</include>
+
+<!-- Spawn a robot into Gazebo -->
+<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model spot" />
+
+</launch>
