@@ -17,8 +17,15 @@ An open-source 3D-printed quadrupedal robot. Intuitive gait generation through 1
 - [ ] *Software* // Write & automate pytest unit tests.
 - [ ] *Software* // Integrate unit tests with github actions.
 - [x] *Simulation* // Create URDF model. (or port collaborater's URDF: Maurice Rahme)
-- [ ] *Simulation* // Gazebo
+- [x] *Simulation* // Gazebo
 - [ ] *Simulation* // RViz Realtime Model
+- [ ] *Design* // Solve offset 3DOF IK model for right limbs _OR_ validate that mirroring angles works for left/right legs
+- [ ] *Simulation* // Implement WebGazebo clientside support for non-linux users
+- [ ] *Sim-to-Real* // Joint servo calibration
+- [ ] *Sim-to-Real* // Refining gait parameters
+- [ ] *Simulation* // Reinforcement learning via ARS
+- [ ] *Software* // Raibert Huerestic for converting desired velocities into gait parameters
+- [ ] *Software* // ROS Nav Stack Layer
 
 <img src="media/trot_demo.gif" width="350"> <img src="media/bodyik_demo.gif" width="350"> 
 
