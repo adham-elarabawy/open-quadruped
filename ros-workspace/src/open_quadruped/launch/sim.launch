@@ -1,5 +1,8 @@
 <launch>
 
+<!-- Load joint controller configurations from YAML file to parameter server -->
+<rosparam file="$(find open_quadruped)/config/control.yaml" command="load"/>
+
 <param name="joy_node/dev" value="/dev/input/js1"/>
 <node pkg="joy" type="joy_node" name="joy_node"/>
 <node pkg="open_quadruped" type="interface_process.py" name="interface_process"/>
