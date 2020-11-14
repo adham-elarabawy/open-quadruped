@@ -50,7 +50,7 @@ You can find the bill of materials for this project [here](https://docs.google.c
 ## Visualization Usage
 *NOTE: There are 3 different visualization tools: Gazebo Simulator (ROS + Physics), RViz (ROS), & my custom 3d-matplotlib visualization tool (body IK model + leg IK model). The latter tool is still under development, and I haven't ported it to use my new control library yet, so it is likely broken for the time being.*
 
-To try the visualization tool out, you'll need to run the [animate.py](https://github.com/adham-elarabawy/OpenQuadruped/blob/master/visualization/animate.py) python file with the proper libraries installed. (matplotlib 3.0.3 supported).
+To try the visualization tool out, you'll need to run the [animate.py](./vis-tool/animate.py) python file with the proper libraries installed. (matplotlib 3.0.3 supported).
 
 You can then use keyboard controls: use x, y, z, a, p, r to select (x axis, y axis, z axis, yaw, pitch, roll), and then the up and down buttons to increment the selected position. If you click '1' on your keyboard, it will reset the position. 
 
