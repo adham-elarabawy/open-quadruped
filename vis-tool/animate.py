@@ -76,7 +76,7 @@ def on_press(key):
 
 def setup():
     ax.clear()
-    ax.set_aspect("equal")
+    # ax.set_aspect("equal")
 
     ax.set_xlim3d(-WINDOW_SIZE / 2, WINDOW_SIZE / 2)
     ax.set_ylim3d(-WINDOW_SIZE / 2, WINDOW_SIZE / 2)
