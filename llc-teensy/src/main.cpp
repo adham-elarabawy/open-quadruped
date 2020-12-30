@@ -1,3 +1,6 @@
+#define ROSSERIAL_HPP
+#define USE_TEENSY_HW_SERIAL
+
 #include <Arduino.h>
 #include "AdvServo.h"
 #include "FootSensor.h"
@@ -10,8 +13,6 @@
 using namespace std;
 
 String serialResponse = "";
-char msg0[] = "0,-999.9,-999.9,-999.9"; // general structure for normal position command
-char msg1[] = "0,-999.9,-999.9,-999.9,-999.9,-999.9,-999.9"; // general structure for normal position/speed command
 bool ESTOPPED = false;
 int max_speed = 500; // deg / sec
 
@@ -94,32 +95,45 @@ void setLegJointIDS() {
 
 void callback( const open_quadruped::JointAngles& joint_angles){
 
-  double ja[4][3] = [joint_angles.fl, joint_angles.fr, joint_angles.bl, joint_angles.br];
-  for(int leg = 0, leg < 4, leg++) {
-    double hip_angle = util.angleConversion(leg, 0, ja[leg][0]);  
-    double shoulder_angle = util.angleConversion(leg, 1, ja[leg][1]);
-    double wrist_angle = util.angleConversion(leg, 2, ja[leg][2]);
-    
-    double h_dist = abs(hip_angle - (*hips[leg]).getPosition());
-    double s_dist = abs(shoulder_angle - (*shoulders[leg]).getPosition());
-    double w_dist = abs(wrist_angle - (*wrists[leg]).getPosition());
-  
-    double scaling_factor = util.max(h_dist, s_dist, w_dist);
-  
-    h_dist /= scaling_factor;
-    s_dist /= scaling_factor;
-    w_dist /= scaling_factor;
-  
-    (*hips[leg]).setPosition(hip_angle, max_speed * h_dist);
-    (*shoulders[leg]).setPosition(shoulder_angle, max_speed * s_dist);
-    (*wrists[leg]).setPosition(wrist_angle, max_speed * w_dist);
-  }
+  // double ja[4][3] = {joint_angles.fl, joint_angles.fr, joint_angles.bl, joint_angles.br};
+  Serial.println(joint_angles.fl[0]);
+  // Serial.print("[Joint Angles] ");
+  // for(int leg = 0; leg < 4; leg++) {
+  //   Serial.print("(leg ");
+  //   Serial.print(leg);
+  //   Serial.print(") hip: ");
+  //   Serial.print(ja[leg][0]);
+  //   Serial.print(" shoulder: ");
+  //   Serial.print(ja[leg][1]);
+  //   Serial.print(" wrist: ");
+  //   Serial.print(ja[leg][2]);
+  //   Serial.println(" ");
+    // double hip_angle = util.angleConversion(leg, 0, ja[leg][0]);
+    // double shoulder_angle = util.angleConversion(leg, 1, ja[leg][1]);
+    // double wrist_angle = util.angleConversion(leg, 2, ja[leg][2]);
+    //
+    // double h_dist = abs(hip_angle - (*hips[leg]).getPosition());
+    // double s_dist = abs(shoulder_angle - (*shoulders[leg]).getPosition());
+    // double w_dist = abs(wrist_angle - (*wrists[leg]).getPosition());
+    //
+    // double scaling_factor = util.max(h_dist, s_dist, w_dist);
+    //
+    // h_dist /= scaling_factor;
+    // s_dist /= scaling_factor;
+    // w_dist /= scaling_factor;
+    //
+    // (*hips[leg]).setPosition(hip_angle, max_speed * h_dist);
+    // (*shoulders[leg]).setPosition(shoulder_angle, max_speed * s_dist);
+    // (*wrists[leg]).setPosition(wrist_angle, max_speed * w_dist);
+  // }
 }
 
 
 ros::Subscriber<open_quadruped::JointAngles> sub("joint_angles", &callback);
 
 void setup() {
+  // Serial1.begin(57600);
+  Serial.begin(500000);
 
   // HIPS
   FL_Hip.init(4, 135, 0);
