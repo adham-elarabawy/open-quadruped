@@ -94,38 +94,53 @@ void setLegJointIDS() {
 }
 
 void callback( const open_quadruped::JointAngles& joint_angles){
+  float ja_h;
+  float ja_s;
+  float ja_w;
+  Serial.println("Data Received: ");
+  for(int leg = 0; leg < 4; leg++) {
+    if (leg == 0) {
+      ja_h = joint_angles.fl[0];
+      ja_s = joint_angles.fl[1];
+      ja_w = joint_angles.fl[2];
+    } else if (leg == 1) {
+      ja_h = joint_angles.fr[0];
+      ja_s = joint_angles.fr[1];
+      ja_w = joint_angles.fr[2];
+    } else if (leg == 2) {
+      ja_h = joint_angles.bl[0];
+      ja_s = joint_angles.bl[1];
+      ja_w = joint_angles.bl[2];
+    } else {
+      ja_h = joint_angles.br[0];
+      ja_s = joint_angles.br[1];
+      ja_w = joint_angles.br[2];
+    }
+    Serial.print(leg);
+    Serial.print(": ");
+    Serial.print(ja_h);
+    Serial.print(", ");
+    Serial.print(ja_s);
+    Serial.print(", ");
+    Serial.println(ja_w);
+    double hip_angle = util.angleConversion(leg, 0, ja_h);
+    double shoulder_angle = util.angleConversion(leg, 1, ja_s);
+    double wrist_angle = util.angleConversion(leg, 2, ja_w);
 
-  // double ja[4][3] = {joint_angles.fl, joint_angles.fr, joint_angles.bl, joint_angles.br};
-  Serial.println(joint_angles.fl[0]);
-  // Serial.print("[Joint Angles] ");
-  // for(int leg = 0; leg < 4; leg++) {
-  //   Serial.print("(leg ");
-  //   Serial.print(leg);
-  //   Serial.print(") hip: ");
-  //   Serial.print(ja[leg][0]);
-  //   Serial.print(" shoulder: ");
-  //   Serial.print(ja[leg][1]);
-  //   Serial.print(" wrist: ");
-  //   Serial.print(ja[leg][2]);
-  //   Serial.println(" ");
-    // double hip_angle = util.angleConversion(leg, 0, ja[leg][0]);
-    // double shoulder_angle = util.angleConversion(leg, 1, ja[leg][1]);
-    // double wrist_angle = util.angleConversion(leg, 2, ja[leg][2]);
-    //
-    // double h_dist = abs(hip_angle - (*hips[leg]).getPosition());
-    // double s_dist = abs(shoulder_angle - (*shoulders[leg]).getPosition());
-    // double w_dist = abs(wrist_angle - (*wrists[leg]).getPosition());
-    //
-    // double scaling_factor = util.max(h_dist, s_dist, w_dist);
-    //
-    // h_dist /= scaling_factor;
-    // s_dist /= scaling_factor;
-    // w_dist /= scaling_factor;
-    //
-    // (*hips[leg]).setPosition(hip_angle, max_speed * h_dist);
-    // (*shoulders[leg]).setPosition(shoulder_angle, max_speed * s_dist);
-    // (*wrists[leg]).setPosition(wrist_angle, max_speed * w_dist);
-  // }
+    double h_dist = abs(hip_angle - (*hips[leg]).getPosition());
+    double s_dist = abs(shoulder_angle - (*shoulders[leg]).getPosition());
+    double w_dist = abs(wrist_angle - (*wrists[leg]).getPosition());
+
+    double scaling_factor = util.max(h_dist, s_dist, w_dist);
+
+    h_dist /= scaling_factor;
+    s_dist /= scaling_factor;
+    w_dist /= scaling_factor;
+
+    (*hips[leg]).setPosition(hip_angle, max_speed * h_dist);
+    (*shoulders[leg]).setPosition(shoulder_angle, max_speed * s_dist);
+    (*wrists[leg]).setPosition(wrist_angle, max_speed * w_dist);
+  }
 }
 
 

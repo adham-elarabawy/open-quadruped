@@ -2,4 +2,8 @@
 <param name="joy_node/dev" value="/dev/input/js0"/>
 <node pkg="joy" type="joy_node" name="joy_node"/>
 <node pkg="open_quadruped" type="interface_process.py" name="interface_process"/>
+<node pkg="rosserial_python" type="serial_node.py" name="serial_node">
+    <param name="port" value="/dev/ttyTHS1"/> <!-- HW Serial -->
+    <param name="baud" value="500000"/>  <!-- must match Teensy -->
+  </node>
 </launch>
