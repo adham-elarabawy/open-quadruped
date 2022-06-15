@@ -30,10 +30,10 @@ An open-source 3D-printed quadrupedal robot. Intuitive gait generation through 1
 <img src="media/trot_demo.gif" width="350"> <img src="media/bodyik_demo.gif" width="350"> 
 
 ## Papers
-I've been formally documenting this project in the form of papers. You can find them here: [adham-e.dev/papers](https://adham-e.dev/papers)
+I've been formally documenting this project in the form of papers. You can find them here: [adhamelarabawy.com/pdf/IK_Model.pdf](https://adhamelarabawy.com/pdf/IK_Model.pdf)
 
 ## Documentation
-You can find a summary of this project on [my portfolio website's project page](https://www.adham-e.dev/project/openquadruped).
+You can find a summary of this project on [my portfolio website's project page](https://www.adhamelarabawy.com).
 I'm hosting most of the technical documentation for this project on [this repo's wiki](https://github.com/adham-elarabawy/OpenQuadruped/wiki).
 
 ## 3D Model
